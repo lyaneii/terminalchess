@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 14:12:07 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/04/28 23:31:18 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/04/28 23:41:07 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include "board.h"
 #include "move.h"
 
-void	__insertPiece(struct board_s *board, const char piece, const char *coords) {
+void	__insertPiece(board_t *board, const char piece, const char *coords) {
 	int	W = convertCoordToIndex(coords[0]);
 	int	H = convertCoordToIndex(coords[1]);
 	
@@ -26,7 +26,7 @@ void	__insertPiece(struct board_s *board, const char piece, const char *coords) 
 }
 
 int	main(void) {
-	struct board_s board;
+	board_t board;
 	char	*input;
 	char	move[3];
 	int		turn = 0;

@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 21:37:45 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/04/28 23:05:32 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/04/28 23:41:07 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "board.h"
 #include "move.h"
 
-static int	isStartPawnMove(struct board_s *board, const int *coords) {
+static int	isStartPawnMove(board_t *board, const int *coords) {
 	if (board->turn == 0 && coords[1] == convertCoordToIndex('4')) {
 		if (board->area[coords[1] + 1][coords[0]] == 'p' || \
 			board->area[coords[1] + 2][coords[0]] == 'p')
@@ -29,7 +29,7 @@ static int	isStartPawnMove(struct board_s *board, const int *coords) {
 	return -1;
 }
 
-static int	checkPawnTarget(struct board_s *board, const char targetPiece, const int *coords, const int column, int capture) {
+static int	checkPawnTarget(board_t *board, const char targetPiece, const int *coords, const int column, int capture) {
 	int	captureDirection = 0;
 	
 	if (targetPiece != '.')
@@ -59,7 +59,7 @@ static int	checkPawnTarget(struct board_s *board, const char targetPiece, const 
 	return 0;
 }
 
-static int	validatePawnMove(struct board_s *board, const char *target, int column, int capture) {
+static int	validatePawnMove(board_t *board, const char *target, int column, int capture) {
 	int 	targetCoords[2];
 	char	targetPiece;
 
@@ -77,7 +77,7 @@ static int	validatePawnMove(struct board_s *board, const char *target, int colum
 	return checkPawnTarget(board, targetPiece, targetCoords, column, capture);
 }
 
-int	pawnMove(struct board_s *board, const char *move) {
+int	pawnMove(board_t *board, const char *move) {
 	int	column;
 	int	capture = 0;
 

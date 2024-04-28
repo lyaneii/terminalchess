@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 21:38:08 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/04/28 23:31:03 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/04/28 23:41:07 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include "board.h"
 #include "colours.h"
 
-static void	createBorder(struct board_s *board) {
+static void	createBorder(board_t *board) {
 	for (int i = 0; i < BOARD_H; i++) {
 		if (i == 0 || i == BOARD_H - 1 || i == BOARD_START || i == BOARD_END) {
 			board->area[i][0] = '[';
@@ -32,7 +32,7 @@ static void	createBorder(struct board_s *board) {
 	}
 }
 
-static void	initStartingPosition(struct board_s *board) {
+static void	initStartingPosition(board_t *board) {
 	for (int i = 1; i < BOARD_H - 1; i++) {
 		if (i == BOARD_START || i == BOARD_END)
 			continue ;
@@ -48,7 +48,7 @@ static void	initStartingPosition(struct board_s *board) {
 	}
 }
 
-static void	displayCoords(struct board_s *board) {
+static void	displayCoords(board_t *board) {
 	char coord = 'a';
 
 	for (int i = 1; i < BOARD_W - 1; i++) {
@@ -62,7 +62,7 @@ static void	displayCoords(struct board_s *board) {
 	}
 }
 
-void	initBoard(struct board_s *board, int turn, int coords) {
+void	initBoard(board_t *board, int turn, int coords) {
 	createBorder(board);
 	if (coords)
 		displayCoords(board);
@@ -71,7 +71,7 @@ void	initBoard(struct board_s *board, int turn, int coords) {
 	board->turn = turn;
 }
 
-void	drawBoard(struct board_s board) {
+void	drawBoard(board_t board) {
 	// printf("\033[u");
 	for (int i = 0; i < BOARD_H; i++) {
 		for (int j = 0; j < BOARD_W; j++) {

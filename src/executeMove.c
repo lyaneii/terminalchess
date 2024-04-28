@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 23:00:14 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/04/28 23:03:25 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/04/28 23:41:07 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "move.h"
 #include "colours.h"
 
-static int	determineMove(struct board_s *board, const char *move) {
+static int	determineMove(board_t *board, const char *move) {
 	if (!strchr("abcdefghNBQRK", move[0]))
 		return -1;
 	if (strchr("abcdefgh", move[0]))
@@ -25,7 +25,7 @@ static int	determineMove(struct board_s *board, const char *move) {
 	return 0;
 }
 
-int executeMove(struct board_s *board, const char *move) {
+int executeMove(board_t *board, const char *move) {
 	printf("move: %s\n", move);
 	if (determineMove(board, move) == -1) {
 		printf("%sinvalid move%s\n", RED, RESET);

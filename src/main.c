@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 14:12:07 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/04/28 23:26:12 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/04/28 23:31:18 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	main(void) {
 	char	move[3];
 	int		turn = 0;
 	
-	initBoard(&board, 0);
+	initBoard(&board, 0, 1);
 	// printf("\033[s");
 	// __insertPiece(&board, 'p', "e4");
 	// __insertPiece(&board, 'P', "f5");

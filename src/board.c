@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 21:38:08 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/04/28 23:25:01 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/04/28 23:31:03 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 
 static void	createBorder(struct board_s *board) {
 	for (int i = 0; i < BOARD_H; i++) {
-		if (i == 0 || i == BOARD_H - 1) {
+		if (i == 0 || i == BOARD_H - 1 || i == BOARD_START || i == BOARD_END) {
 			board->area[i][0] = '[';
 			board->area[i][BOARD_W - 1] = ']';
 			for (int j = 1; j < BOARD_W - 1; j++) {
@@ -62,9 +62,10 @@ static void	displayCoords(struct board_s *board) {
 	}
 }
 
-void	initBoard(struct board_s *board, int turn) {
+void	initBoard(struct board_s *board, int turn, int coords) {
 	createBorder(board);
-	displayCoords(board);
+	if (coords)
+		displayCoords(board);
 	initStartingPosition(board);
 	board->lastMove = NULL;
 	board->turn = turn;

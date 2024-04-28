@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 21:39:06 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/04/28 23:02:03 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/04/28 23:31:24 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ struct	board_s {
 	int		turn;
 };
 
-void	initBoard(struct board_s *board, int turn);
+void	initBoard(struct board_s *board, int turn, int coords);
 void	drawBoard(struct board_s board);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 21:37:45 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/04/29 14:17:49 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/04/29 21:26:47 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,76 +15,61 @@
 #include "board.h"
 #include "move.h"
 
-static int	isStartPawnMove(board_t *board, const int *coords) {
-	if (board->turn == 0 && coords[1] == convertCoordToIndex('4')) {
-		if (board->area[coords[1] + 1][coords[0]] == 'p' || \
-			board->area[coords[1] + 2][coords[0]] == 'p')
-			return 0;
-	}
-	else if (board->turn == 1 && coords[1] == convertCoordToIndex('5')) {
-		if (board->area[coords[1] - 1][coords[0]] == 'P' || \
-			board->area[coords[1] - 2][coords[0]] == 'P')
-			return 0;
-	}
+static int	checkPawnStartingMove(board_t *board, moveInfo_t *move, const int sign, const char pawn) {
+	if (board->area[move->targetCoords[1] + (2 * sign)][move->targetCoords[0]] == pawn && \
+		board->area[move->targetCoords[1] + (1 * sign)][move->targetCoords[0]] == '.')
+		return 0;
 	return -1;
 }
 
-static int	checkPawnTarget(board_t *board, const char targetPiece, const int *coords, const int column, int capture) {
-	int	captureDirection = 0;
+static int	pawnNonCaptureMove(board_t *board, moveInfo_t *move) {
+	int		sign = -1;
+	char	targetIndex = '5';
+	char	pawn = 'P';
 	
-	if (targetPiece != '.')
-		captureDirection = islower(targetPiece) ? -1 : 1;
-	if (board->turn == 0 && captureDirection == -1)
-		return -1;
-	if (board->turn == 1 && captureDirection == 1)
-		return -1;
-	if (capture == 1 && targetPiece == '.')
-		return -1;
-	if (capture == 0 && targetPiece != '.')
-		return -1;
-	if (capture == 1) {
-		if (captureDirection == 1 && board->area[coords[1] + captureDirection][column] != 'p')
-			return -1;
-		if (captureDirection == -1 && board->area[coords[1] + captureDirection][column] != 'P')
+	if (board->turn == 0) {
+		sign = 1;
+		targetIndex = '4';
+		pawn = 'p';
+	}
+	if (board->area[move->targetCoords[1] + (1 * sign)][move->targetCoords[0]] == pawn)
+		move->selfCoords[1] = move->targetCoords[1] + (1 * sign);
+	else if (move->targetCoords[1] == convertCoordToIndex(targetIndex)) {
+		if (checkPawnStartingMove(board, move, sign, pawn) == 0)
+			move->selfCoords[1] = move->targetCoords[1] + (2 * sign);
+		else
 			return -1;
 	}
-	if (capture == 0) {
-		if (isStartPawnMove(board, coords) == 0)
-			return 0;
-		if (board->turn == 0 && board->area[coords[1] + 1][coords[0]] != 'p')
-			return -1;
-		if (board->turn == 1 && board->area[coords[1] - 1][coords[0]] != 'P')
-			return -1;
-	}
+	else
+		return -1;
 	return 0;
 }
 
-static int	validatePawnMove(board_t *board, const char *target, int column, int capture) {
-	int 	targetCoords[2];
-	char	targetPiece;
+static int	pawnCaptureMove(board_t *board, moveInfo_t *move) {
+	int		sign = -1;
+	char	pawn = 'P';
 
-	if (capture == 1 && strlen(target) != 2)
+	if (abs(move->selfCoords[0] - move->targetCoords[0]) != 1)
 		return -1;
-	if (capture == 0 && strlen(target) != 1)
+	if (board->turn == 0) {
+		sign = 1;
+		pawn = 'p';
+	}
+	if (board->area[move->targetCoords[1] + (1 * sign)][move->selfCoords[0]] == pawn)
+		move->selfCoords[1] = move->targetCoords[1] + (1 * sign);
+	else
 		return -1;
-	if (capture == 1) {
-		targetCoords[0] = convertCoordToIndex(target[0]);
-		targetCoords[1] = convertCoordToIndex(target[1]);
-	}
-	else {
-		targetCoords[0] = column;
-		targetCoords[1] = convertCoordToIndex(target[0]);
-	}
-	targetPiece = board->area[targetCoords[1]][targetCoords[0]];
-	return checkPawnTarget(board, targetPiece, targetCoords, column, capture);
+	return 0;
 }
 
-int	pawnMove(board_t *board, const char *move) {
-	int	column;
-	int	capture = 0;
-
-	column = convertCoordToIndex(move[0]);
-	if (move[1] == 'x')
-		capture = 1;
-	return validatePawnMove(board, move + capture + 1, column, capture);
+int	rangeCheckPawn(board_t *board, moveInfo_t *move, const char *input) {
+	if (move->capture == 0 && strlen(input) != 2)
+		return -1;
+	else if (move->capture == 1 && strlen(input) != 4)
+		return -1;
+	move->selfCoords[0] = convertCoordToIndex(input[0]);
+	if (move->capture == 0)
+		return pawnNonCaptureMove(board, move);
+	else
+		return pawnCaptureMove(board, move);
 }

@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 21:37:45 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/04/28 23:41:07 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/04/29 14:17:49 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,8 @@ static int	validatePawnMove(board_t *board, const char *target, int column, int 
 	char	targetPiece;
 
 	if (capture == 1 && strlen(target) != 2)
+		return -1;
+	if (capture == 0 && strlen(target) != 1)
 		return -1;
 	if (capture == 1) {
 		targetCoords[0] = convertCoordToIndex(target[0]);

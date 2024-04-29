@@ -6,12 +6,13 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 21:37:45 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/04/29 21:26:47 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/04/29 23:03:01 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <ctype.h>
 #include <string.h>
+#include <stdlib.h>
 #include "board.h"
 #include "move.h"
 

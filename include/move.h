@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 22:58:29 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/04/29 21:27:15 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/04/29 21:36:03 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,5 +24,5 @@ typedef struct moveInfo_s {
 int	convertCoordToIndex(char coord);
 int executeMove(board_t *board, const char *move);
 int	rangeCheckPawn(board_t *board, moveInfo_t *move, const char *input);
-
+int	rangeCheckKnight(board_t *board, moveInfo_t *move, const char *input);
 #endif

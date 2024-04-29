@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 23:00:14 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/04/29 21:27:35 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/04/29 23:05:16 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,15 +34,15 @@ static int	getTargetCoords(board_t *board, moveInfo_t *move, const char *input) 
 static int	getSelfCoords(board_t *board, moveInfo_t *move, const char *input) {
 	if (strchr("abcdefgh", input[0]))
 		return rangeCheckPawn(board, move, input);
-	else if (tolower(input[0]) == 'n')
+	else if (input[0] == 'N')
+		return rangeCheckKnight(board, move, input);
+	else if (input[0] == 'B')
 		return -1;
-	else if (tolower(input[0]) == 'b')
+	else if (input[0] == 'Q')
 		return -1;
-	else if (tolower(input[0]) == 'q')
+	else if (input[0] == 'R')
 		return -1;
-	else if (tolower(input[0]) == 'r')
-		return -1;
-	else if (tolower(input[0]) == 'k')
+	else if (input[0] == 'K')
 		return -1;
 	return -1;
 }

@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 14:12:07 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/04/28 23:41:07 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/04/30 00:35:19 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,12 @@ void	__insertPiece(board_t *board, const char piece, const char *coords) {
 int	main(void) {
 	board_t board;
 	char	*input;
-	char	move[3];
 	int		turn = 0;
 	
 	initBoard(&board, 0, 1);
 	// printf("\033[s");
-	// __insertPiece(&board, 'p', "e4");
-	// __insertPiece(&board, 'P', "f5");
+	// __insertPiece(&board, 'n', "e6");
+	// __insertPiece(&board, 'n', "e4");
 	while (1) {
 		drawBoard(board);
 		if (turn == 0)
@@ -43,8 +42,14 @@ int	main(void) {
 			input = readline("Black to move: ");
 		if (!input)
 			break ;
-		if (!strncmp(move, "resign", 7))
+		if (!strncmp(input, "resign", 7))
 			break ;
+		if (!strncmp(input, "pass", 5)) {
+			turn = turn == 1 ? 0 : 1;
+			board.turn = turn;
+			free(input);
+			continue ;
+		}
 		if (executeMove(&board, input) == 0) {
 			if (board.lastMove != NULL)
 				free(board.lastMove);

@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/30 18:06:21 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/04/30 18:23:37 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/04/30 19:45:47 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	printMoveList(moveList_t *moveList) {
 	printf("\033[0K");
 	if (!moveList)
 		return ;
-	printf("[Move Sheet]\n");
+	printf("\n[Move Sheet]\n");
 	while (moveList) {
 		if (turn == 0)
 			printf("%d. ", counter++);

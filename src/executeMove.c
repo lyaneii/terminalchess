@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 23:00:14 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/04/30 17:30:21 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/04/30 18:27:29 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ int executeMove(board_t *board, const char *input) {
 
 	move.valid = determineMove(board, &move, input);
 	if (move.valid == -1) {
-		printf("\033[0K%sinvalid move%s\n", RED, RESET);
+		printf("\033[0K%sinvalid move%s", RED, RESET);
 		return -1;
 	}
 	printf("\033[0K%svalid move%s", GREEN, RESET);

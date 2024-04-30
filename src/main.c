@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 14:12:07 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/04/30 17:43:28 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/04/30 18:17:47 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,79 +25,36 @@ void	__insertPiece(board_t *board, const char piece, const char *coords) {
 	board->area[H][W] = piece;
 }
 
-void	printMoveList(moveList_t *moveList) {
-	int	counter = 1;
-	int	turn = 0;
-
-	printf("\033[0K");
-	if (!moveList)
-		return ;
-	printf("[Move Sheet]\n");
-	while (moveList) {
-		if (turn == 0)
-			printf("%d. ", counter++);
-		printf("%s", moveList->move);
-		turn++;
-		if (turn == 1)
-			printf("\t");
-		if (turn > 1 || strchr(moveList->move, '0')) {
-			printf("\n");
-			turn = 0;
-		}
-		moveList = moveList->next;
-	}
-}
-
-moveList_t	*newMove(char *move) {
-	moveList_t	*new;
-
-	new = malloc(sizeof(moveList_t));
-	if (!new)
-		return NULL;
-	new->move = move;
-	new->next = NULL;
-	return new;
-}
-
-moveList_t	*lastMove(moveList_t *head) {
-	if (!head)
-		return NULL;
-	while (head->next)
-		head = head->next;
-	return head;
-}
-
-void	addMove(moveList_t **head, const char *input) {
-	moveList_t	*move;
-	char		*dup;
-
-	dup = strdup(input);
-	if (!dup)
-		return perror("dup malloc fail: ");
-	move = newMove(dup);
-	if (!move)
-		return (perror("newMove malloc fail: "), free(dup));
-	if (!*head)
-		*head = move;
-	else
-		lastMove(*head)->next = move;
-}
-
 static void	switchTurn(board_t *board) {
 	board->turn = board->turn == 0 ? 1 : 0;
 }
 
-static void	freeMoveList(moveList_t *head) {
-	moveList_t	*tmp;
-	
-	if (!head)
-		return ;
-	while (head) {
-		tmp = head;
-		head = head->next;
-		free(tmp->move);
-		free(tmp);
+static void	resign(int turn, moveList_t **moveList) {
+	if (turn == 0)
+		addMove(moveList, "0-1");
+	else
+		addMove(moveList, "1-0");
+}
+
+static void	displayTurnPrompt(int turn) {
+	printf("\033[0K");
+	if (turn == 0)
+		printf("White to move: ");
+	else
+		printf("Black to move: ");
+}
+
+static int	handleInput(board_t *board, char *input, moveList_t **moveList) {
+	if (!strncmp(input, "resign", 7)) {
+		resign(board->turn, moveList);
+		return -1;
+	} else if (!strncmp(input, "pass", 5)) {
+		switchTurn(board);
+	} else if (executeMove(board, input) == 0) {
+		addMove(moveList, input);
+		switchTurn(board);
 	}
+	return 0;
 }
 
 int	main(void) {
@@ -112,28 +69,12 @@ int	main(void) {
 	bzero(&input, 10);
 	while (1) {
 		drawBoard(board);
-		printf("\033[0K");
-		if (board.turn == 0)
-			printf("White to move: ");
-		else
-			printf("Black to move: ");
+		displayTurnPrompt(board.turn);
 		if (!fgets(input, 10, stdin))
 			break ;
 		input[strcspn(input, "\n")] = 0;
-		if (!strncmp(input, "resign", 7)) {
-			if (board.turn == 0)
-				addMove(&moveList, "0-1");
-			else
-				addMove(&moveList, "1-0");
+		if (handleInput(&board, input, &moveList) == -1)
 			break ;
-		}
-		if (!strncmp(input, "pass", 5)) {
-			switchTurn(&board);
-		} else if (executeMove(&board, input) == 0) {
-			addMove(&moveList, input);
-			switchTurn(&board);
-		}
-		bzero(&input, 10);
 	}
 	printMoveList(moveList);
 	freeMoveList(moveList);

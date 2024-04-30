@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 22:58:29 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/04/30 17:30:21 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/04/30 18:08:42 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,12 @@ typedef struct moveList_s {
 	char				*move;
 	struct moveList_s	*next;
 }	moveList_t;
+
+void		printMoveList(moveList_t *moveList);
+moveList_t	*newMove(char *move);
+moveList_t	*lastMove(moveList_t *head);
+void		addMove(moveList_t **head, const char *input);
+void		freeMoveList(moveList_t *head);
 
 int	convertCoordToIndex(char coord);
 int executeMove(board_t *board, const char *move);

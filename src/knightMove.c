@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/29 21:35:20 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/04/30 17:30:21 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/04/30 19:57:37 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,28 +56,38 @@ static int	knightCount(board_t *board, moveInfo_t *move, char knight) {
 }
 
 static int	getKnightAtRank(board_t *board, moveInfo_t *move, int rank, char knight) {
+	int	offset = abs(move->targetCoords[1] - rank);
+
+	if (offset == 0)
+		return -1;
+	offset = offset == 1 ? 2 : 1;
 	if (getRankPieceCount(board, knight, rank) != 1)
 		return -1;
 	move->selfCoords[1] = rank;
-	if (board->area[rank][move->targetCoords[0] - 2] == knight) {
-		move->selfCoords[0] = move->targetCoords[0] - 2;
+	if (board->area[rank][move->targetCoords[0] - offset] == knight) {
+		move->selfCoords[0] = move->targetCoords[0] - offset;
 	}
-	else if (board->area[rank][move->targetCoords[0] + 2] == knight)
-		move->selfCoords[0] = move->targetCoords[0] + 2;
+	else if (board->area[rank][move->targetCoords[0] + offset] == knight)
+		move->selfCoords[0] = move->targetCoords[0] + offset;
 	else
 		return -1;
 	return 0;
 }
 
 static int	getKnightAtFile(board_t *board, moveInfo_t *move, int file, char knight) {
+	int	offset = abs(move->targetCoords[0] - file);
+
+	if (offset == 0)
+		return -1;
+	offset = offset == 1 ? 2 : 1;
 	if (getFilePieceCount(board, knight, file) != 1)
 		return -1;
 	move->selfCoords[0] = file;
-	if (board->area[move->targetCoords[1] - 1][file] == knight) {
-		move->selfCoords[1] = move->targetCoords[1] - 1;
+	if (board->area[move->targetCoords[1] - offset][file] == knight) {
+		move->selfCoords[1] = move->targetCoords[1] - offset;
 	}
-	else if (board->area[move->targetCoords[1] + 1][file] == knight)
-		move->selfCoords[1] = move->targetCoords[1] + 1;
+	else if (board->area[move->targetCoords[1] + offset][file] == knight)
+		move->selfCoords[1] = move->targetCoords[1] + offset;
 	else
 		return -1;
 	return 0;

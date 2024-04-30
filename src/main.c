@@ -6,15 +6,15 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 14:12:07 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/04/30 17:30:33 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/04/30 17:43:28 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #define _XOPEN_SOURCE 500
 #include <string.h>
+#include <strings.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <readline/readline.h>
 #include "board.h"
 #include "move.h"
 
@@ -100,30 +100,26 @@ static void	freeMoveList(moveList_t *head) {
 	}
 }
 
-static void	cleanup(moveList_t *moveList, char *input) {
-	if (input)
-		free(input);
-	freeMoveList(moveList);
-}
-
 int	main(void) {
 	board_t 	board;
 	moveList_t	*moveList = NULL;
-	char		*input;
+	char		input[10];
 	
 	initBoard(&board, 0, 1);
 	printf("\033[s");
 	// __insertPiece(&board, 'n', "e6");
 	// __insertPiece(&board, 'n', "e4");
+	bzero(&input, 10);
 	while (1) {
 		drawBoard(board);
 		printf("\033[0K");
 		if (board.turn == 0)
-			input = readline("White to move: ");
+			printf("White to move: ");
 		else
-			input = readline("Black to move: ");
-		if (!input)
+			printf("Black to move: ");
+		if (!fgets(input, 10, stdin))
 			break ;
+		input[strcspn(input, "\n")] = 0;
 		if (!strncmp(input, "resign", 7)) {
 			if (board.turn == 0)
 				addMove(&moveList, "0-1");
@@ -137,9 +133,9 @@ int	main(void) {
 			addMove(&moveList, input);
 			switchTurn(&board);
 		}
-		free(input);
+		bzero(&input, 10);
 	}
 	printMoveList(moveList);
-	cleanup(moveList, input);
+	freeMoveList(moveList);
 	return 0;
 }

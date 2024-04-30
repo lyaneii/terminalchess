@@ -6,14 +6,14 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 22:58:29 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/04/30 02:46:43 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/04/30 17:30:21 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TERMINALCHESS_MOVE_H
 # define TERMINALCHESS_MOVE_H
-# define RANK "12345678"
-# define FILE "abcdefgh"
+# define ROW "12345678"
+# define COLUMN "abcdefgh"
 # include "board.h"
 
 typedef struct moveInfo_s {

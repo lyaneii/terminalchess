@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 23:00:14 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/04/30 03:22:06 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/04/30 17:30:21 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 static int	getTargetCoords(board_t *board, moveInfo_t *move, const char *input) {
 	size_t	i = strlen(input) - 1;
 
-	if (i < 1 || !strchr(RANK, input[i]) || !strchr(FILE, input[i - 1]))
+	if (i < 1 || !strchr(ROW, input[i]) || !strchr(COLUMN, input[i - 1]))
 		return -1;
 	move->targetCoords[1] = convertCoordToIndex(input[i]);
 	move->targetCoords[0] = convertCoordToIndex(input[i - 1]);
@@ -38,7 +38,7 @@ static int	getTargetCoords(board_t *board, moveInfo_t *move, const char *input) 
 }
 
 static int	getSelfCoords(board_t *board, moveInfo_t *move, const char *input) {
-	if (strchr(FILE, input[0]))
+	if (strchr(COLUMN, input[0]))
 		return rangeCheckPawn(board, move, input);
 	else if (input[0] == 'N')
 		return rangeCheckKnight(board, move, input);

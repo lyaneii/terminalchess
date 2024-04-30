@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/30 18:06:21 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/04/30 19:45:47 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/04/30 20:02:45 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	printMoveList(moveList_t *moveList) {
 		printf("%s", moveList->move);
 		turn++;
 		if (turn == 1)
-			printf("\t");
+			printf("\t ");
 		if (turn > 1 || strchr(moveList->move, '0')) {
 			printf("\n");
 			turn = 0;

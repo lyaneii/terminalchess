@@ -6,13 +6,14 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 22:35:31 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/04/30 00:37:18 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/04/30 02:39:49 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
+#include "board.h"
 #include "colours.h"
 
 static void	drawWhitePiece(char piece) {
@@ -48,12 +49,14 @@ static void	drawBlackPiece(char piece) {
 }
 
 int	isPiece(char c) {
-	if (strchr("prnbkq", tolower(c)) != NULL)
+	if (strchr("prnbkq.", tolower(c)) != NULL)
 		return 1;
 	return 0;
 }
 
 void	drawPiece(char piece) {
+	if (piece == '.')
+		printf(BOARD_FILL);
 	if (islower(piece))
 		drawWhitePiece(piece);
 	else

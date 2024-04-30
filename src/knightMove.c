@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/29 21:35:20 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/04/30 00:34:23 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/04/30 02:24:29 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,14 +127,14 @@ int	rangeCheckKnight(board_t *board, moveInfo_t *move, const char *input) {
 	if (count == 1)
 		return getKnightCoords(board, move, 0, 0, knight);
 	if (len - move->capture == 4) {
-		if (strchr("abcdefgh", input[1]))
+		if (strchr(FILE, input[1]))
 			return getKnightAtFile(board, move, convertCoordToIndex(input[1]), knight);
-		else if (strchr("12345678", input[1]))
+		else if (strchr(RANK, input[1]))
 			return getKnightAtRank(board, move, convertCoordToIndex(input[1]), knight);
 		return -1;
 	}
 	if (len - move->capture == 5) {
-		if (!strchr("abcdefgh", input[1]) || !strchr("12345678", input[2]))
+		if (!strchr(FILE, input[1]) || !strchr(RANK, input[2]))
 			return -1;
 		return getKnightCoords(board, move, convertCoordToIndex(input[2]), convertCoordToIndex(input[1]), knight);
 	}

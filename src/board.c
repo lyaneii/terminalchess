@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 21:38:08 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/04/30 00:35:14 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/04/30 03:16:09 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,12 +67,11 @@ void	initBoard(board_t *board, int turn, int coords) {
 	if (coords)
 		displayCoords(board);
 	initStartingPosition(board);
-	board->lastMove = NULL;
 	board->turn = turn;
 }
 
 void	drawBoard(board_t board) {
-	// printf("\033[u");
+	printf("\033[u");
 	for (int i = 0; i < BOARD_H; i++) {
 		for (int j = 0; j < BOARD_W; j++) {
 			if ((i > BOARD_START && i < BOARD_END) && isPiece(board.area[i][j]))

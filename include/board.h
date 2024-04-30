@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 21:39:06 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/04/28 23:41:07 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/04/30 03:01:52 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,10 @@
 # define BOARD_END 12
 # define START_PIECES_W "rnbqkbnr"
 # define START_PIECES_B "RNBQKBNR"
+# define BOARD_FILL "○"
 
 typedef struct {
 	char	area[BOARD_H][BOARD_W];
-	char	*lastMove;
 	int		turn;
 }	board_t;
 

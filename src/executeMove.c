@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 23:00:14 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/04/30 18:27:29 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/04/30 19:41:32 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,9 @@ static int	getTargetCoords(board_t *board, moveInfo_t *move, const char *input) 
 	if (move->capture == 1) {
 		if (board->area[move->targetCoords[1]][move->targetCoords[0]] == '.')
 			return -1;
-		if (board->turn == 1 && islower(board->area[move->targetCoords[1]][move->targetCoords[0]]))
+		if (board->turn == 0 && islower(board->area[move->targetCoords[1]][move->targetCoords[0]]))
 			return -1;
-		if (board->turn == 0 && isupper(board->area[move->targetCoords[1]][move->targetCoords[0]]))
+		if (board->turn == 1 && isupper(board->area[move->targetCoords[1]][move->targetCoords[0]]))
 			return -1;
 	}
 	return 0;

@@ -6,17 +6,20 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 22:35:31 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/04/30 02:39:49 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/01 13:43:18 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "board.h"
 #include "colours.h"
 
-static void	drawWhitePiece(char piece) {
+static void	drawPieceSet1(char piece, const char *colour) {
+	if (colour)
+		printf("%s", colour);
 	if (piece == 'p')
 		printf("♟︎");
 	else if (piece == 'r')
@@ -31,22 +34,22 @@ static void	drawWhitePiece(char piece) {
 		printf("♛");
 }
 
-static void	drawBlackPiece(char piece) {
-	printf(WHITE);
-	if (piece == 'P')
-		printf("♙");
-	else if (piece == 'R')
-		printf("♖");
-	else if (piece == 'N')
-		printf("♘");
-	else if (piece == 'B')
-		printf("♗");
-	else if (piece == 'K')
-		printf("♔");
-	else if (piece == 'Q')
-		printf("♕");
-	printf(RESET);
-}
+// static void	drawPieceSet2(char piece, const char *colour) {
+// 	if (colour)
+// 		printf("%s", colour);
+// 	if (piece == 'P')
+// 		printf("♙");
+// 	else if (piece == 'R')
+// 		printf("♖");
+// 	else if (piece == 'N')
+// 		printf("♘");
+// 	else if (piece == 'B')
+// 		printf("♗");
+// 	else if (piece == 'K')
+// 		printf("♔");
+// 	else if (piece == 'Q')
+// 		printf("♕");
+// }
 
 int	isPiece(char c) {
 	if (strchr("prnbkq.", tolower(c)) != NULL)
@@ -54,11 +57,16 @@ int	isPiece(char c) {
 	return 0;
 }
 
-void	drawPiece(char piece) {
-	if (piece == '.')
-		printf(BOARD_FILL);
-	if (islower(piece))
-		drawWhitePiece(piece);
+void	drawPiece(char piece, int row, int column) {
+	if (piece == '.') {
+		if (abs(row - column) % 2 == 0)
+			printf(BOARD_FILL);
+		else
+			printf(BOARD_FILL);
+	}
+	else if (islower(piece))
+		drawPieceSet1(tolower(piece), NULL);
 	else
-		drawBlackPiece(piece);
+		drawPieceSet1(tolower(piece), WHITE);
+	printf(RESET);
 }

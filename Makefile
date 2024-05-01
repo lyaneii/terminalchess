@@ -14,13 +14,16 @@ SRC := ${addprefix ${DIR_SRC}/, ${SRC}}
 DIR_OBJ = obj
 OBJ = ${subst ${DIR_SRC}/, ${DIR_OBJ}/, ${SRC:.c=.o}}
 
+DIR_HEADERS = include
+HEADERS = board.h colours.h move.h piece.h
+HEADERS := ${addprefix ${DIR_HEADERS}/, ${HEADERS}}
 
 ${NAME}: ${OBJ}
 	cc ${CFLAGS} $^ ${LINKS} -o $@
 
 all: ${NAME}
 
-${OBJ}: ${DIR_OBJ}/%.o: ${DIR_SRC}/%.c
+${OBJ}: ${DIR_OBJ}/%.o: ${DIR_SRC}/%.c ${HEADERS}
 	@mkdir -p ${@D}
 	cc ${CFLAGS} ${INCLUDES} -c $< -o $@
 

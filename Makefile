@@ -2,11 +2,13 @@ NAME = terminalchess
 
 CFLAGS = -Wall -Wextra -Werror
 
-LINKS = -lreadline
+LINKS = 
 
 INCLUDES = -I./include
 
-SRC = main.c board.c pawnMove.c drawPiece.c coordToIndex.c executeMove.c knightMove.c moveList.c
+SRC =	main.c board.c pawnMove.c drawPiece.c coordToIndex.c \
+		executeMove.c knightMove.c moveList.c bishopMove.c \
+		pieceCount.c
 
 DIR_SRC = src
 SRC := ${addprefix ${DIR_SRC}/, ${SRC}}

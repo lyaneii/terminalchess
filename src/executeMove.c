@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 23:00:14 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/04/30 19:41:32 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/01 17:29:30 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,12 @@
 #include <stdlib.h>
 #include "move.h"
 #include "colours.h"
+
+static int	getSign(int coord1, int coord2) {
+	if (coord2 == coord1)
+		return 0;
+	return coord2 - coord1 < 0 ? 1 : -1;
+}
 
 static int	getTargetCoords(board_t *board, moveInfo_t *move, const char *input) {
 	size_t	i = strlen(input) - 1;
@@ -43,7 +49,7 @@ static int	getSelfCoords(board_t *board, moveInfo_t *move, const char *input) {
 	else if (input[0] == 'N')
 		return rangeCheckKnight(board, move, input);
 	else if (input[0] == 'B')
-		return -1;
+		return rangeCheckBishop(board, move, input);
 	else if (input[0] == 'Q')
 		return -1;
 	else if (input[0] == 'R')
@@ -61,6 +67,23 @@ static int	isCapture(const char *input) {
 	return -1;
 }
 
+static int	pathIsUnobstructed(board_t *board, moveInfo_t *move) {
+	int	rankSign = getSign(move->targetCoords[1], move->selfCoords[1]);
+	int	fileSign = getSign(move->targetCoords[0], move->selfCoords[0]);
+	int	currentRank = move->selfCoords[1] + rankSign;
+	int	currentFile = move->selfCoords[0] + fileSign;
+
+	if (tolower(board->area[move->selfCoords[1]][move->selfCoords[0]]) == 'n')
+		return 0;
+	while (currentRank != move->targetCoords[1] || currentFile != move->targetCoords[0]) {
+		if (board->area[currentRank][currentFile] != '.')
+			return -1;
+		currentRank += rankSign;
+		currentFile += fileSign;
+	}
+	return 0;
+}
+
 static int	findMoveCoords(board_t *board, moveInfo_t *move, const char *input) {
 	if (getTargetCoords(board, move, input) == -1)
 		return -1;
@@ -75,7 +98,9 @@ static int	determineMove(board_t *board, moveInfo_t *move, const char *input) {
 	move->capture = isCapture(input);
 	if (move->capture == -1)
 		return -1;
-	return findMoveCoords(board, move, input);
+	if (findMoveCoords(board, move, input) == -1)
+		return -1;
+	return pathIsUnobstructed(board, move);
 }
 
 int executeMove(board_t *board, const char *input) {

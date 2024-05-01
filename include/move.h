@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 22:58:29 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/04/30 18:08:42 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/01 15:00:41 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,9 @@ void		freeMoveList(moveList_t *head);
 
 int	convertCoordToIndex(char coord);
 int executeMove(board_t *board, const char *move);
+int	getRankPieceCount(board_t *board, char piece, int rank);
+int	getFilePieceCount(board_t *board, char piece, int file);
 int	rangeCheckPawn(board_t *board, moveInfo_t *move, const char *input);
 int	rangeCheckKnight(board_t *board, moveInfo_t *move, const char *input);
+int	rangeCheckBishop(board_t *board, moveInfo_t *move, const char *input);
 #endif

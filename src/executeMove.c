@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 23:00:14 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/01 18:27:55 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/02 13:35:01 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ static int	getSelfCoords(board_t *board, moveInfo_t *move, const char *input) {
 	else if (input[0] == 'B')
 		return rangeCheckBishop(board, move, input);
 	else if (input[0] == 'Q')
-		return -1;
+		return rangeCheckQueen(board, move, input);
 	else if (input[0] == 'R')
 		return rangeCheckRook(board, move, input);
 	else if (input[0] == 'K')

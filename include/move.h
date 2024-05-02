@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 22:58:29 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/01 18:27:40 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/02 13:35:10 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,4 +42,5 @@ int	rangeCheckPawn(board_t *board, moveInfo_t *move, const char *input);
 int	rangeCheckKnight(board_t *board, moveInfo_t *move, const char *input);
 int	rangeCheckBishop(board_t *board, moveInfo_t *move, const char *input);
 int	rangeCheckRook(board_t *board, moveInfo_t *move, const char *input);
+int	rangeCheckQueen(board_t *board, moveInfo_t *move, const char *input);
 #endif

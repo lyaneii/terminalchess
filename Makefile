@@ -8,7 +8,7 @@ INCLUDES = -I./include
 
 SRC =	main.c board.c pawnMove.c drawPiece.c coordToIndex.c \
 		executeMove.c knightMove.c moveList.c bishopMove.c \
-		pieceCount.c rookMove.c
+		pieceCount.c rookMove.c queenMove.c
 
 DIR_SRC = src
 SRC := ${addprefix ${DIR_SRC}/, ${SRC}}

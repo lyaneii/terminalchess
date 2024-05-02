@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 14:12:07 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/04/30 18:17:47 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/02 13:23:39 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,12 @@ static void	switchTurn(board_t *board) {
 	board->turn = board->turn == 0 ? 1 : 0;
 }
 
-static void	resign(int turn, moveList_t **moveList) {
+static int	resign(int turn, moveList_t **moveList) {
 	if (turn == 0)
 		addMove(moveList, "0-1");
 	else
 		addMove(moveList, "1-0");
+	return -1;
 }
 
 static void	displayTurnPrompt(int turn) {
@@ -45,15 +46,12 @@ static void	displayTurnPrompt(int turn) {
 }
 
 static int	handleInput(board_t *board, char *input, moveList_t **moveList) {
-	if (!strncmp(input, "resign", 7)) {
-		resign(board->turn, moveList);
-		return -1;
-	} else if (!strncmp(input, "pass", 5)) {
-		switchTurn(board);
-	} else if (executeMove(board, input) == 0) {
+	if (!strncmp(input, "pass", 5));
+	else if (!strncmp(input, "resign", 7))
+		return resign(board->turn, moveList);
+	else if (executeMove(board, input) == 0)
 		addMove(moveList, input);
-		switchTurn(board);
-	}
+	switchTurn(board);
 	return 0;
 }
 

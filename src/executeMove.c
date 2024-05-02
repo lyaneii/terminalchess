@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 23:00:14 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/02 13:35:01 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/02 16:30:07 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,16 +103,16 @@ static int	determineMove(board_t *board, moveInfo_t *move, const char *input) {
 	return pathIsUnobstructed(board, move);
 }
 
-int executeMove(board_t *board, const char *input) {
+int executeMove(board_t *board, const char *input, moveList_t **moveList) {
 	moveInfo_t	move;
 
-	move.valid = determineMove(board, &move, input);
-	if (move.valid == -1) {
+	if (determineMove(board, &move, input) == -1) {
 		printf("\033[0K%sinvalid move%s", RED, RESET);
 		return -1;
 	}
 	printf("\033[0K%svalid move%s", GREEN, RESET);
 	board->area[move.targetCoords[1]][move.targetCoords[0]] = board->area[move.selfCoords[1]][move.selfCoords[0]];
 	board->area[move.selfCoords[1]][move.selfCoords[0]] = '.';
+	addMove(moveList, input, board->turn, move.check);
 	return 0;
 }

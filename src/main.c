@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 14:12:07 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/02 13:23:39 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/02 16:48:07 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,9 @@ static void	switchTurn(board_t *board) {
 
 static int	resign(int turn, moveList_t **moveList) {
 	if (turn == 0)
-		addMove(moveList, "0-1");
+		addMove(moveList, "0-1", turn, 0);
 	else
-		addMove(moveList, "1-0");
+		addMove(moveList, "1-0", turn, 0);
 	return -1;
 }
 
@@ -46,12 +46,12 @@ static void	displayTurnPrompt(int turn) {
 }
 
 static int	handleInput(board_t *board, char *input, moveList_t **moveList) {
-	if (!strncmp(input, "pass", 5));
-	else if (!strncmp(input, "resign", 7))
+	if (!strncmp(input, "resign", 7))
 		return resign(board->turn, moveList);
-	else if (executeMove(board, input) == 0)
-		addMove(moveList, input);
-	switchTurn(board);
+	else if (!strncmp(input, "pass", 5))
+		switchTurn(board);
+	else if (executeMove(board, input, moveList) == 0)
+		switchTurn(board);
 	return 0;
 }
 
@@ -62,8 +62,11 @@ int	main(void) {
 	
 	initBoard(&board, 0, 1);
 	printf("\033[s");
-	// __insertPiece(&board, 'n', "e6");
-	// __insertPiece(&board, 'n', "e4");
+	// __insertPiece(&board, 'N', "c6");
+	// __insertPiece(&board, 'N', "f6");
+	// __insertPiece(&board, 'n', "e5");
+	// __insertPiece(&board, 'P', "d5");
+	// __insertPiece(&board, 'p', "d4");
 	bzero(&input, 10);
 	while (1) {
 		drawBoard(board);

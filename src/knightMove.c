@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/29 21:35:20 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/01 15:13:43 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/02 16:46:07 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@
 
 static int	knightCount(board_t *board, moveInfo_t *move, char knight) {
 	int	count = 0;
-	int	offset = abs(move->targetCoords[0] - move->targetCoords[1]) % 2 == 0 ? 0 : 1;
+	int	offsetP = abs(move->targetCoords[0] - move->targetCoords[1]);
+	int offsetN = move->targetCoords[0] + move->targetCoords[1];
 
 	for (int i = move->targetCoords[1] - 2; i <= move->targetCoords[1] + 2; i++) {
 		if (i <= BOARD_START || i == move->targetCoords[1] || i >= BOARD_END)
@@ -26,7 +27,7 @@ static int	knightCount(board_t *board, moveInfo_t *move, char knight) {
 		for (int j = move->targetCoords[0] - 2; j <= move->targetCoords[0] + 2; j++) {
 			if (j < 1 || j == move->targetCoords[0] || j > 8)
 				continue ;
-			if (j - i != 0 && abs(j - i) % 2 == offset)
+			if (j + i == offsetN || abs(j - i) == offsetP)
 				continue ;
 			if (board->area[i][j] == knight)
 				count++;
@@ -74,7 +75,8 @@ static int	getKnightAtFile(board_t *board, moveInfo_t *move, int file, char knig
 }
 
 static int	getKnightCoords(board_t *board, moveInfo_t *move, int file, int rank, char knight) {
-	int	offset = abs(move->targetCoords[0] - move->targetCoords[1]) % 2 == 0 ? 0 : 1;
+	int	offsetP = abs(move->targetCoords[0] - move->targetCoords[1]);
+	int offsetN = move->targetCoords[0] + move->targetCoords[1];
 
 	if (rank != 0 && file != 0) {
 		if (board->area[file][rank] != knight)
@@ -91,7 +93,7 @@ static int	getKnightCoords(board_t *board, moveInfo_t *move, int file, int rank,
 		for (int j = move->targetCoords[0] - 2; j <= move->targetCoords[0] + 2; j++) {
 			if (j < 1 || j == move->targetCoords[0] || j > 8)
 				continue ;
-			if (j - i != 0 && abs(j - i) % 2 == offset)
+			if (j + i == offsetN || abs(j - i) == offsetP)
 				continue ;
 			if (board->area[i][j] == knight) {
 				move->selfCoords[1] = i;

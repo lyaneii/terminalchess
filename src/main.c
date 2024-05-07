@@ -6,78 +6,32 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 14:12:07 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/02 16:48:07 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/07 22:58:55 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#define _XOPEN_SOURCE 500
-#include <string.h>
-#include <strings.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include "board.h"
-#include "move.h"
+#include <termios.h>
+#include <unistd.h>
 
-void	__insertPiece(board_t *board, const char piece, const char *coords) {
-	int	W = convertCoordToIndex(coords[0]);
-	int	H = convertCoordToIndex(coords[1]);
-	
-	board->area[H][W] = piece;
+void	disableRawMode(struct termios *term) {
+	tcsetattr(STDIN_FILENO, TCSAFLUSH, term);
 }
 
-static void	switchTurn(board_t *board) {
-	board->turn = board->turn == 0 ? 1 : 0;
-}
+void	enableRawMode(struct termios *original) {
+	struct termios term;
 
-static int	resign(int turn, moveList_t **moveList) {
-	if (turn == 0)
-		addMove(moveList, "0-1", turn, 0);
-	else
-		addMove(moveList, "1-0", turn, 0);
-	return -1;
-}
-
-static void	displayTurnPrompt(int turn) {
-	printf("\033[0K");
-	if (turn == 0)
-		printf("White to move: ");
-	else
-		printf("Black to move: ");
-}
-
-static int	handleInput(board_t *board, char *input, moveList_t **moveList) {
-	if (!strncmp(input, "resign", 7))
-		return resign(board->turn, moveList);
-	else if (!strncmp(input, "pass", 5))
-		switchTurn(board);
-	else if (executeMove(board, input, moveList) == 0)
-		switchTurn(board);
-	return 0;
+	tcgetattr(STDIN_FILENO, original);
+	term = *original;
+	term.c_lflag &= ~(ECHO | ICANON);
+	tcsetattr(STDIN_FILENO, TCSAFLUSH, &term);
 }
 
 int	main(void) {
-	board_t 	board;
-	moveList_t	*moveList = NULL;
-	char		input[10];
-	
-	initBoard(&board, 0, 1);
-	printf("\033[s");
-	// __insertPiece(&board, 'N', "c6");
-	// __insertPiece(&board, 'N', "f6");
-	// __insertPiece(&board, 'n', "e5");
-	// __insertPiece(&board, 'P', "d5");
-	// __insertPiece(&board, 'p', "d4");
-	bzero(&input, 10);
-	while (1) {
-		drawBoard(board);
-		displayTurnPrompt(board.turn);
-		if (!fgets(input, 10, stdin))
-			break ;
-		input[strcspn(input, "\n")] = 0;
-		if (handleInput(&board, input, &moveList) == -1)
-			break ;
-	}
-	printMoveList(moveList);
-	freeMoveList(moveList);
+	struct termios original;
+	char	c;
+
+	enableRawMode(&original);
+	while (read(STDIN_FILENO, &c, 1) && c != 'q');
+	disableRawMode(&original);
 	return 0;
 }

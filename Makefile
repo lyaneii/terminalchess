@@ -6,9 +6,7 @@ LINKS =
 
 INCLUDES = -I./include
 
-SRC =	main.c board.c pawnMove.c drawPiece.c coordToIndex.c \
-		executeMove.c knightMove.c moveList.c bishopMove.c \
-		pieceCount.c rookMove.c queenMove.c
+SRC =	main.c
 
 DIR_SRC = src
 SRC := ${addprefix ${DIR_SRC}/, ${SRC}}
@@ -17,7 +15,7 @@ DIR_OBJ = obj
 OBJ = ${subst ${DIR_SRC}/, ${DIR_OBJ}/, ${SRC:.c=.o}}
 
 DIR_HEADERS = include
-HEADERS = board.h colours.h move.h piece.h
+HEADERS = colours.h
 HEADERS := ${addprefix ${DIR_HEADERS}/, ${HEADERS}}
 
 ${NAME}: ${OBJ}

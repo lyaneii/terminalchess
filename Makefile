@@ -15,7 +15,7 @@ DIR_OBJ = obj
 OBJ = ${subst ${DIR_SRC}/, ${DIR_OBJ}/, ${SRC:.c=.o}}
 
 DIR_HEADERS = include
-HEADERS = colours.h
+HEADERS = defines.h
 HEADERS := ${addprefix ${DIR_HEADERS}/, ${HEADERS}}
 
 ${NAME}: ${OBJ}

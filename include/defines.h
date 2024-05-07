@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   colours.h                                          :+:    :+:            */
+/*   defines.h                                          :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 21:34:04 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/01 13:38:24 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/08 01:34:56 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef TERMINALCHESS_COLOURS_H
-# define TERMINALCHESS_COLOURS_H
+#ifndef TERMINALCHESS_DEFINES_H
+# define TERMINALCHESS_DEFINES_H
 
 # define RED "\033[1;31m"
 # define GREEN "\033[1;32m"
@@ -20,4 +20,13 @@
 # define WHITE "\033[1;37m"
 # define RESET "\033[0m"
 
+# define SAVE_CURSOR_POS "\033[s"
+# define LOAD_CURSOR_POS "\033[u"
+
+# define BOARD_W 8
+# define BOARD_H 8
+# define FILL "◻"
+# define HIGHLIGHT "❏"
+# define MOVES "❏"
+// ◻⛶
 #endif

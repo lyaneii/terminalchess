@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 14:12:07 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/08 17:50:09 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/08 17:56:13 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,6 +154,20 @@ void	makeMove(char board[BOARD_H][BOARD_W], int self[2], int target[2]) {
 	board[self[0]][self[1]] = '.';
 }
 
+void	handleSelection(char board[BOARD_H][BOARD_W], t_display *highlight) {
+	if (highlight->cursor[0] == highlight->selectedPiece[0] && \
+		highlight->cursor[1] == highlight->selectedPiece[1])
+		deselectPiece(highlight);
+	else if (isHighlightedMove(highlight->moves, highlight->cursor[0], highlight->cursor[1])) {
+		makeMove(board, highlight->selectedPiece, highlight->cursor);
+		deselectPiece(highlight);
+	}
+	else {
+		selectPiece(highlight);
+		getMovesAtSquare(&highlight->moves, board, highlight->selectedPiece);
+	}
+}
+
 int	main(void) {
 	char			board[BOARD_H][BOARD_W];
 	struct termios	original;
@@ -170,19 +184,8 @@ int	main(void) {
 	displayBoard(board, &highlight);
 	enableRawMode(&original);
 	while (read(STDIN_FILENO, &c, 1) && c != 'q') {
-		if (c == ' ') {
-			if (highlight.cursor[0] == highlight.selectedPiece[0] && \
-				highlight.cursor[1] == highlight.selectedPiece[1])
-				deselectPiece(&highlight);
-			else if (isHighlightedMove(highlight.moves, highlight.cursor[0], highlight.cursor[1])) {
-				makeMove(board, highlight.selectedPiece, highlight.cursor);
-				deselectPiece(&highlight);
-			}
-			else {
-				selectPiece(&highlight);
-				getMovesAtSquare(&highlight.moves, board, highlight.selectedPiece);
-			}
-		}
+		if (c == ' ')
+			handleSelection(board, &highlight);
 		else if (c == '\033')
 			handleArrowKey(c, &highlight);
 		displayBoard(board, &highlight);

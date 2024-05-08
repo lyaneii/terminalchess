@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/05/08 13:23:22 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/08 17:14:02 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/08 17:33:13 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -328,6 +328,17 @@ void	getBishopMoves(t_moves **moves, char board[BOARD_H][BOARD_W], \
 		{8,0,8}
 	};
 	getPossibleMoves(moves, board, start, range);
+}
+
+void	cleanupMoves(t_moves **moves) {
+	t_moves	*tmp;
+
+	while (*moves) {
+		tmp = *moves;
+		*moves = (*moves)->next;
+		free(tmp);
+	}
+	*moves = NULL;
 }
 
 void	getMovesAtSquare(t_moves **moves, char board[BOARD_H][BOARD_W], int originalPosition[2]) {

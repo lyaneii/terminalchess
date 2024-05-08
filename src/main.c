@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 14:12:07 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/08 16:57:07 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/08 17:32:38 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,10 +141,7 @@ void	handleArrowKey(char c, t_display *highlight) {
 
 void	deselectPiece(t_display *highlight) {
 	highlight->selectedPiece[0] = -1;
-	if (highlight->moves != NULL) {
-		free(highlight->moves);
-		highlight->moves = NULL;
-	}
+	cleanupMoves(&highlight->moves);
 }
 
 void	selectPiece(t_display *highlight) {
@@ -190,8 +187,7 @@ int	main(void) {
 			handleArrowKey(c, &highlight);
 		displayBoard(board, &highlight);
 	}
-	if (highlight.moves != NULL)
-		free(highlight.moves);
+	cleanupMoves(&highlight.moves);
 	disableRawMode(&original);
 	return 0;
 }

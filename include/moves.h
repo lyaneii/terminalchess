@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/05/08 13:22:16 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/08 16:55:53 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/08 17:33:06 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,5 +26,6 @@ typedef struct s_display {
 }	t_display;
 
 void	getMovesAtSquare(t_moves **moves, char board[BOARD_H][BOARD_W], int originalPosition[2]);
+void	cleanupMoves(t_moves **moves);
 
 #endif

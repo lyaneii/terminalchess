@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/05/08 13:23:22 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/08 17:33:13 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/08 17:50:24 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -321,13 +321,45 @@ void	getQueenMoves(t_moves **moves, char board[BOARD_H][BOARD_W], \
 }
 
 void	getBishopMoves(t_moves **moves, char board[BOARD_H][BOARD_W], \
-					int start[2]) {
+						int start[2]) {
 	int	range[3][3] = {
 		{8,0,8},
 		{0,0,0},
 		{8,0,8}
 	};
 	getPossibleMoves(moves, board, start, range);
+}
+
+void	getKingMoves(t_moves **moves, char board[BOARD_H][BOARD_W], \
+					int start[2]) {
+	int	range[3][3] = {
+		{1,1,1},
+		{1,0,1},
+		{1,1,1}
+	};
+	getPossibleMoves(moves, board, start, range);
+}
+
+void	getKnightMoves(t_moves **moves, char board[BOARD_H][BOARD_W], \
+						int start[2]) {
+	int	range[2] = {2, 1};
+	int	knightPos[8][2] = {
+		{start[0] + range[0], start[1] + range[1]},
+		{start[0] + -range[0], start[1] + range[1]},
+		{start[0] + -range[0], start[1] + -range[1]},
+		{start[0] + range[0], start[1] + -range[1]},
+		{start[0] + range[1], start[1] + range[0]},
+		{start[0] + -range[1], start[1] + range[0]},
+		{start[0] + -range[1], start[1] + -range[0]},
+		{start[0] + range[1], start[1] + -range[0]}
+	};
+
+	for (int i = 0; i < 8; i++) {
+		if (!isWithinBounds(knightPos[i]))
+			continue ;
+		if (isValidTarget(board[knightPos[i][0]][knightPos[i][1]], board[start[0]][start[1]]))
+			addMove(moves, newMove(knightPos[i]));
+	}
 }
 
 void	cleanupMoves(t_moves **moves) {
@@ -354,4 +386,8 @@ void	getMovesAtSquare(t_moves **moves, char board[BOARD_H][BOARD_W], int origina
 		getQueenMoves(moves, board, position);
 	else if (tolower(board[position[0]][position[1]]) == 'b')
 		getBishopMoves(moves, board, position);
+	else if (tolower(board[position[0]][position[1]]) == 'k')
+		getKingMoves(moves, board, position);
+	else if (tolower(board[position[0]][position[1]]) == 'n')
+		getKnightMoves(moves, board, position);
 }

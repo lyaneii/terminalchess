@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 14:12:07 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/08 14:11:48 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/08 16:57:07 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
+#include <stdlib.h>
 #include "moves.h"
 
 void	displayPieceSet(char piece, int highlight, int moves) {
@@ -47,13 +48,25 @@ void	displayPieceSet(char piece, int highlight, int moves) {
 	printf(RESET);
 }
 
+int	isHighlightedMove(t_moves *moves, int row, int col) {
+	while (moves) {
+		if (moves->target[0] == row && moves->target[1] == col)
+			return 1;
+		moves = moves->next;
+	}
+	return 0;
+}
+
 void	displayBoard(const char board[BOARD_H][BOARD_W], t_display *highlight) {
 	printf(LOAD_CURSOR_POS);
 	for (int i = 0; i < BOARD_H; i++) {
 		for (int j = 0; j < BOARD_W; j++) {
 			if (i == highlight->cursor[0] && j == highlight->cursor[1])
 				displayPieceSet(board[i][j], 1, 0);
-			else if (highlight->selectedPiece[0] != -1 && i == highlight->selectedPiece[0] && j == highlight->selectedPiece[1])
+			else if (highlight->selectedPiece[0] != -1 && \
+					i == highlight->selectedPiece[0] && j == highlight->selectedPiece[1])
+				displayPieceSet(board[i][j], 0, 1);
+			else if (isHighlightedMove(highlight->moves, i, j))
 				displayPieceSet(board[i][j], 0, 1);
 			else
 				displayPieceSet(board[i][j], 0, 0);
@@ -128,11 +141,20 @@ void	handleArrowKey(char c, t_display *highlight) {
 
 void	deselectPiece(t_display *highlight) {
 	highlight->selectedPiece[0] = -1;
+	if (highlight->moves != NULL) {
+		free(highlight->moves);
+		highlight->moves = NULL;
+	}
 }
 
 void	selectPiece(t_display *highlight) {
 	highlight->selectedPiece[0] = highlight->cursor[0];
 	highlight->selectedPiece[1] = highlight->cursor[1];
+}
+
+void	makeMove(char board[BOARD_H][BOARD_W], int self[2], int target[2]) {
+	board[target[0]][target[1]] = board[self[0]][self[1]];
+	board[self[0]][self[1]] = '.';
 }
 
 int	main(void) {
@@ -145,6 +167,7 @@ int	main(void) {
 	highlight.cursor[1] = 0;
 	highlight.selectedPiece[0] = -1;
 	highlight.selectedPiece[1] = 0;
+	highlight.moves = NULL;
 	initBoard(board);
 	loadFEN(board, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
 	displayBoard(board, &highlight);
@@ -154,13 +177,21 @@ int	main(void) {
 			if (highlight.cursor[0] == highlight.selectedPiece[0] && \
 				highlight.cursor[1] == highlight.selectedPiece[1])
 				deselectPiece(&highlight);
-			else
+			else if (isHighlightedMove(highlight.moves, highlight.cursor[0], highlight.cursor[1])) {
+				makeMove(board, highlight.selectedPiece, highlight.cursor);
+				deselectPiece(&highlight);
+			}
+			else {
 				selectPiece(&highlight);
+				getMovesAtSquare(&highlight.moves, board, highlight.selectedPiece);
+			}
 		}
-		if (c == '\033')
+		else if (c == '\033')
 			handleArrowKey(c, &highlight);
 		displayBoard(board, &highlight);
 	}
+	if (highlight.moves != NULL)
+		free(highlight.moves);
 	disableRawMode(&original);
 	return 0;
 }

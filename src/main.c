@@ -6,22 +6,25 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 14:12:07 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/08 01:37:02 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/08 14:11:48 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "defines.h"
-#include <termios.h>
+#include "terminalMode.h"
 #include <unistd.h>
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
+#include "moves.h"
 
-void	displayPieceSet(char piece, int highlight) {
-	if (highlight)
-		printf(RED);
+void	displayPieceSet(char piece, int highlight, int moves) {
+	if (moves)
+		printf(YELLOW);
 	else if (islower(piece))
 		printf(WHITE);
+	if (highlight)
+		printf(RED);
 	piece = tolower(piece);
 	if (piece == 'p')
 		printf("♟︎");
@@ -44,31 +47,21 @@ void	displayPieceSet(char piece, int highlight) {
 	printf(RESET);
 }
 
-void	displayBoard(const char board[BOARD_H][BOARD_W], int cursor[2]) {
+void	displayBoard(const char board[BOARD_H][BOARD_W], t_display *highlight) {
 	printf(LOAD_CURSOR_POS);
 	for (int i = 0; i < BOARD_H; i++) {
 		for (int j = 0; j < BOARD_W; j++) {
-			if (i == cursor[0] && j == cursor[1])
-				displayPieceSet(board[i][j], 1);
+			if (i == highlight->cursor[0] && j == highlight->cursor[1])
+				displayPieceSet(board[i][j], 1, 0);
+			else if (highlight->selectedPiece[0] != -1 && i == highlight->selectedPiece[0] && j == highlight->selectedPiece[1])
+				displayPieceSet(board[i][j], 0, 1);
 			else
-				displayPieceSet(board[i][j], 0);
+				displayPieceSet(board[i][j], 0, 0);
 			printf(" ");
 		}
 		printf("\n");
 	}
-}
-
-void	disableRawMode(struct termios *term) {
-	tcsetattr(STDIN_FILENO, TCSAFLUSH, term);
-}
-
-void	enableRawMode(struct termios *original) {
-	struct termios	term;
-
-	tcgetattr(STDIN_FILENO, original);
-	term = *original;
-	term.c_lflag &= ~(ECHO | ICANON);
-	tcsetattr(STDIN_FILENO, TCSAFLUSH, &term);
+	printf("[q = quit]\n");
 }
 
 int	convertCoordinateToIndex(char coordinate) {
@@ -119,34 +112,54 @@ void	initBoard(char board[BOARD_H][BOARD_W]) {
 	}
 }
 
-void	handleArrowKey(char c, int cursor[2]) {
+void	handleArrowKey(char c, t_display *highlight) {
 	if (read(STDIN_FILENO, &c, 1) && c == '[') {
 		read(STDIN_FILENO, &c, 1);
 		if (c == 'A')
-			cursor[0] - 1 >= 0 ? cursor[0]-- : 0;
+			highlight->cursor[0] - 1 >= 0 ? highlight->cursor[0]-- : 0;
 		else if (c == 'B')
-			cursor[0] + 1 < BOARD_H ? cursor[0]++ : BOARD_H;
+			highlight->cursor[0] + 1 < BOARD_H ? highlight->cursor[0]++ : BOARD_H;
 		else if (c == 'C')
-			cursor[1] + 1 < BOARD_W ? cursor[1]++ : BOARD_H;
+			highlight->cursor[1] + 1 < BOARD_W ? highlight->cursor[1]++ : BOARD_H;
 		else if (c == 'D')
-			cursor[1] - 1 >= 0 ? cursor[1]-- : 0;
+			highlight->cursor[1] - 1 >= 0 ? highlight->cursor[1]-- : 0;
 	}
+}
+
+void	deselectPiece(t_display *highlight) {
+	highlight->selectedPiece[0] = -1;
+}
+
+void	selectPiece(t_display *highlight) {
+	highlight->selectedPiece[0] = highlight->cursor[0];
+	highlight->selectedPiece[1] = highlight->cursor[1];
 }
 
 int	main(void) {
 	char			board[BOARD_H][BOARD_W];
 	struct termios	original;
 	char			c;
-	int				cursor[2] = {0, 0};
+	t_display		highlight;
 
+	highlight.cursor[0] = 0;
+	highlight.cursor[1] = 0;
+	highlight.selectedPiece[0] = -1;
+	highlight.selectedPiece[1] = 0;
 	initBoard(board);
 	loadFEN(board, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
-	displayBoard(board, cursor);
+	displayBoard(board, &highlight);
 	enableRawMode(&original);
 	while (read(STDIN_FILENO, &c, 1) && c != 'q') {
+		if (c == ' ') {
+			if (highlight.cursor[0] == highlight.selectedPiece[0] && \
+				highlight.cursor[1] == highlight.selectedPiece[1])
+				deselectPiece(&highlight);
+			else
+				selectPiece(&highlight);
+		}
 		if (c == '\033')
-			handleArrowKey(c, cursor);
-		displayBoard(board, cursor);
+			handleArrowKey(c, &highlight);
+		displayBoard(board, &highlight);
 	}
 	disableRawMode(&original);
 	return 0;

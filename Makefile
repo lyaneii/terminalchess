@@ -6,7 +6,7 @@ LINKS =
 
 INCLUDES = -I./include
 
-SRC =	main.c
+SRC =	main.c terminalMode.c pawnMove.c
 
 DIR_SRC = src
 SRC := ${addprefix ${DIR_SRC}/, ${SRC}}

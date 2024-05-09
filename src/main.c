@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 14:12:07 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/08 17:56:13 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/09 14:44:14 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,9 @@ void	displayPieceSet(char piece, int highlight, int moves) {
 	else if (piece == 'q')
 		printf("♛");
 	else if (piece == '.') {
-		if (highlight)
+		if (moves)
+			printf(MOVES);
+		else if (highlight)
 			printf(HIGHLIGHT);
 		else
 			printf(FILL);
@@ -163,6 +165,7 @@ void	handleSelection(char board[BOARD_H][BOARD_W], t_display *highlight) {
 		deselectPiece(highlight);
 	}
 	else {
+		deselectPiece(highlight);
 		selectPiece(highlight);
 		getMovesAtSquare(&highlight->moves, board, highlight->selectedPiece);
 	}

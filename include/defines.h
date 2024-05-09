@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 21:34:04 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/09 14:42:01 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/09 14:50:28 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,5 +28,6 @@
 # define FILL "◻"
 # define HIGHLIGHT "❏"
 # define MOVES "◼"
+# define LAST_MOVE "⛶"
 // ◻⛶
 #endif

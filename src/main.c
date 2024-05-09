@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 14:12:07 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/09 14:44:14 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/09 15:02:14 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,13 @@
 #include <stdlib.h>
 #include "moves.h"
 
-void	displayPieceSet(char piece, int highlight, int moves) {
+void	displayPieceSet(char piece, int highlight, int moves, int lastMove) {
 	if (moves)
 		printf(YELLOW);
 	else if (islower(piece))
 		printf(WHITE);
+	if (lastMove)
+		printf(GREEN);
 	if (highlight)
 		printf(RED);
 	piece = tolower(piece);
@@ -40,7 +42,9 @@ void	displayPieceSet(char piece, int highlight, int moves) {
 	else if (piece == 'q')
 		printf("♛");
 	else if (piece == '.') {
-		if (moves)
+		if (lastMove)
+			printf(LAST_MOVE);
+		else if (moves)
 			printf(MOVES);
 		else if (highlight)
 			printf(HIGHLIGHT);
@@ -64,14 +68,20 @@ void	displayBoard(const char board[BOARD_H][BOARD_W], t_display *highlight) {
 	for (int i = 0; i < BOARD_H; i++) {
 		for (int j = 0; j < BOARD_W; j++) {
 			if (i == highlight->cursor[0] && j == highlight->cursor[1])
-				displayPieceSet(board[i][j], 1, 0);
+				displayPieceSet(board[i][j], 1, 0, 0);
 			else if (highlight->selectedPiece[0] != -1 && \
 					i == highlight->selectedPiece[0] && j == highlight->selectedPiece[1])
-				displayPieceSet(board[i][j], 0, 1);
+				displayPieceSet(board[i][j], 0, 1, 0);
 			else if (isHighlightedMove(highlight->moves, i, j))
-				displayPieceSet(board[i][j], 0, 1);
+				displayPieceSet(board[i][j], 0, 1, 0);
+			else if (highlight->lastMove[0][0] != -1 && \
+					i == highlight->lastMove[0][0] && j == highlight->lastMove[0][1])
+				displayPieceSet(board[i][j], 0, 0, 1);
+			else if (highlight->lastMove[0][0] != -1 && \
+					i == highlight->lastMove[1][0] && j == highlight->lastMove[1][1])
+				displayPieceSet(board[i][j], 0, 0, 1);
 			else
-				displayPieceSet(board[i][j], 0, 0);
+				displayPieceSet(board[i][j], 0, 0, 0);
 			printf(" ");
 		}
 		printf("\n");
@@ -151,9 +161,13 @@ void	selectPiece(t_display *highlight) {
 	highlight->selectedPiece[1] = highlight->cursor[1];
 }
 
-void	makeMove(char board[BOARD_H][BOARD_W], int self[2], int target[2]) {
+void	makeMove(char board[BOARD_H][BOARD_W], int self[2], int target[2], t_display *highlight) {
 	board[target[0]][target[1]] = board[self[0]][self[1]];
 	board[self[0]][self[1]] = '.';
+	highlight->lastMove[0][0] = self[0];
+	highlight->lastMove[0][1] = self[1];
+	highlight->lastMove[1][0] = target[0];
+	highlight->lastMove[1][1] = target[1];
 }
 
 void	handleSelection(char board[BOARD_H][BOARD_W], t_display *highlight) {
@@ -161,7 +175,7 @@ void	handleSelection(char board[BOARD_H][BOARD_W], t_display *highlight) {
 		highlight->cursor[1] == highlight->selectedPiece[1])
 		deselectPiece(highlight);
 	else if (isHighlightedMove(highlight->moves, highlight->cursor[0], highlight->cursor[1])) {
-		makeMove(board, highlight->selectedPiece, highlight->cursor);
+		makeMove(board, highlight->selectedPiece, highlight->cursor, highlight);
 		deselectPiece(highlight);
 	}
 	else {
@@ -181,6 +195,10 @@ int	main(void) {
 	highlight.cursor[1] = 0;
 	highlight.selectedPiece[0] = -1;
 	highlight.selectedPiece[1] = 0;
+	highlight.lastMove[0][0] = -1;
+	highlight.lastMove[0][1] = 0;
+	highlight.lastMove[1][0] = 0;
+	highlight.lastMove[1][1] = 0;
 	highlight.moves = NULL;
 	initBoard(board);
 	loadFEN(board, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");

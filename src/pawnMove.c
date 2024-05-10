@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/05/08 13:23:22 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/08 17:50:24 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/10 17:03:30 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,10 @@
 #include <stdlib.h>
 #define START_RANK_W 6
 #define START_RANK_B 1
+#define EN_PASSANT_RANK_W 3
+#define EN_PASSANT_RANK_B 4
 
-t_moves	*newMove(int target[2]) {
+t_moves	*newMove(int target[2], int specialMove) {
 	t_moves	*move;
 
 	move = malloc(sizeof(t_moves));
@@ -25,6 +27,7 @@ t_moves	*newMove(int target[2]) {
 		return NULL;
 	move->target[0] = target[0];
 	move->target[1] = target[1];
+	move->specialMove = specialMove;
 	move->next = NULL;
 	return move;
 }
@@ -79,7 +82,7 @@ void	checkNorth(t_moves **moves, char board[BOARD_H][BOARD_W], \
 		if (tolower(piece) == 'p' && board[start[0]][start[1]] != '.')
 			return ;
 		if (isValidTarget(board[start[0]][start[1]], piece))
-			addMove(moves, newMove(start));
+			addMove(moves, newMove(start, 0));
 		else
 			return ;
 		if (board[start[0]][start[1]] != '.')
@@ -99,7 +102,7 @@ void	checkWest(t_moves **moves, char board[BOARD_H][BOARD_W], \
 		if (!isWithinBounds(start))
 			return ;
 		if (isValidTarget(board[start[0]][start[1]], piece))
-			addMove(moves, newMove(start));
+			addMove(moves, newMove(start, 0));
 		else
 			return ;
 		if (board[start[0]][start[1]] != '.')
@@ -119,7 +122,7 @@ void	checkEast(t_moves **moves, char board[BOARD_H][BOARD_W], \
 		if (!isWithinBounds(start))
 			return ;
 		if (isValidTarget(board[start[0]][start[1]], piece))
-			addMove(moves, newMove(start));
+			addMove(moves, newMove(start, 0));
 		else
 			return ;
 		if (board[start[0]][start[1]] != '.')
@@ -141,7 +144,7 @@ void	checkSouth(t_moves **moves, char board[BOARD_H][BOARD_W], \
 		if (tolower(piece) == 'p' && board[start[0]][start[1]] != '.')
 			return ;
 		if (isValidTarget(board[start[0]][start[1]], piece))
-			addMove(moves, newMove(start));
+			addMove(moves, newMove(start, 0));
 		else
 			return ;
 		if (board[start[0]][start[1]] != '.')
@@ -164,7 +167,7 @@ void	checkNorthWest(t_moves **moves, char board[BOARD_H][BOARD_W], \
 		if (tolower(piece) == 'p' && board[start[0]][start[1]] == '.')
 			return ;
 		if (isValidTarget(board[start[0]][start[1]], piece))
-			addMove(moves, newMove(start));
+			addMove(moves, newMove(start, 0));
 		else
 			return ;
 		if (board[start[0]][start[1]] != '.')
@@ -187,7 +190,7 @@ void	checkNorthEast(t_moves **moves, char board[BOARD_H][BOARD_W], \
 		if (tolower(piece) == 'p' && board[start[0]][start[1]] == '.')
 			return ;
 		if (isValidTarget(board[start[0]][start[1]], piece))
-			addMove(moves, newMove(start));
+			addMove(moves, newMove(start, 0));
 		else
 			return ;
 		if (board[start[0]][start[1]] != '.')
@@ -210,7 +213,7 @@ void	checkSouthWest(t_moves **moves, char board[BOARD_H][BOARD_W], \
 		if (tolower(piece) == 'p' && board[start[0]][start[1]] == '.')
 			return ;
 		if (isValidTarget(board[start[0]][start[1]], piece))
-			addMove(moves, newMove(start));
+			addMove(moves, newMove(start, 0));
 		else
 			return ;
 		if (board[start[0]][start[1]] != '.')
@@ -233,7 +236,7 @@ void	checkSouthEast(t_moves **moves, char board[BOARD_H][BOARD_W], \
 		if (tolower(piece) == 'p' && board[start[0]][start[1]] == '.')
 			return ;
 		if (isValidTarget(board[start[0]][start[1]], piece))
-			addMove(moves, newMove(start));
+			addMove(moves, newMove(start, 0));
 		else
 			return ;
 		if (board[start[0]][start[1]] != '.')
@@ -256,8 +259,22 @@ void	getPossibleMoves(t_moves **moves, char board[BOARD_H][BOARD_W], \
 	checkSouthEast(moves, board, start, direction[2][2], piece);
 }
 
+int	enPassantIsPossible(char board[BOARD_H][BOARD_W], int start[2], int lastMove[2][2]) {
+	if (tolower(board[lastMove[1][0]][lastMove[1][1]]) != 'p')
+		return 0;
+	if (start[0] == EN_PASSANT_RANK_W && abs(lastMove[1][1] - start[1]) == 1) {
+		if (lastMove[0][0] == START_RANK_B)
+			return 1;
+	}
+	else if (start[0] == EN_PASSANT_RANK_B && abs(lastMove[1][1] - start[1]) == 1) {
+		if (lastMove[0][0] == START_RANK_W)
+			return 1;
+	}
+	return 0;
+}
+
 void	getPawnMoves(t_moves **moves, char board[BOARD_H][BOARD_W], \
-					int start[2]) {
+					int start[2], int lastMove[2][2]) {
 	char piece = board[start[0]][start[1]];
 	int	captRangeBlack[3][3] = {
 		{0,0,0},
@@ -288,6 +305,8 @@ void	getPawnMoves(t_moves **moves, char board[BOARD_H][BOARD_W], \
 			moveRangeBlack[2][1]--;
 			getPossibleMoves(moves, board, start, moveRangeBlack);
 		}
+		if (enPassantIsPossible(board, start, lastMove))
+			addMove(moves, newMove((int[2]){lastMove[1][0] + 1, lastMove[1][1]}, -1));
 	}
 	else {
 		getPossibleMoves(moves, board, start, captRangeWhite);
@@ -297,6 +316,8 @@ void	getPawnMoves(t_moves **moves, char board[BOARD_H][BOARD_W], \
 			moveRangeWhite[0][1]--;
 			getPossibleMoves(moves, board, start, moveRangeWhite);
 		}
+		if (enPassantIsPossible(board, start, lastMove))
+			addMove(moves, newMove((int[2]){lastMove[1][0] - 1, lastMove[1][1]}, 1));
 	}
 }
 
@@ -358,7 +379,7 @@ void	getKnightMoves(t_moves **moves, char board[BOARD_H][BOARD_W], \
 		if (!isWithinBounds(knightPos[i]))
 			continue ;
 		if (isValidTarget(board[knightPos[i][0]][knightPos[i][1]], board[start[0]][start[1]]))
-			addMove(moves, newMove(knightPos[i]));
+			addMove(moves, newMove(knightPos[i], 0));
 	}
 }
 
@@ -373,13 +394,14 @@ void	cleanupMoves(t_moves **moves) {
 	*moves = NULL;
 }
 
-void	getMovesAtSquare(t_moves **moves, char board[BOARD_H][BOARD_W], int originalPosition[2]) {
+void	getMovesAtSquare(t_moves **moves, char board[BOARD_H][BOARD_W], int originalPosition[2], \
+						int lastMove[2][2]) {
 	int	position[2] = {originalPosition[0], originalPosition[1]};
 
 	if (board[position[0]][position[1]] == '.')
 		return ;
 	else if (tolower(board[position[0]][position[1]]) == 'p')
-		getPawnMoves(moves, board, position);
+		getPawnMoves(moves, board, position, lastMove);
 	else if (tolower(board[position[0]][position[1]]) == 'r')
 		getRookMoves(moves, board, position);
 	else if (tolower(board[position[0]][position[1]]) == 'q')

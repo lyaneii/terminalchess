@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 14:12:07 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/09 15:02:14 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/10 17:03:20 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,12 @@
 #include "moves.h"
 
 void	displayPieceSet(char piece, int highlight, int moves, int lastMove) {
-	if (moves)
+	if (lastMove)
+		printf(GREEN);
+	else if (moves)
 		printf(YELLOW);
 	else if (islower(piece))
 		printf(WHITE);
-	if (lastMove)
-		printf(GREEN);
 	if (highlight)
 		printf(RED);
 	piece = tolower(piece);
@@ -161,13 +161,44 @@ void	selectPiece(t_display *highlight) {
 	highlight->selectedPiece[1] = highlight->cursor[1];
 }
 
-void	makeMove(char board[BOARD_H][BOARD_W], int self[2], int target[2], t_display *highlight) {
+void	movePieceToTarget(char board[BOARD_H][BOARD_W], int self[2], int target[2]) {
 	board[target[0]][target[1]] = board[self[0]][self[1]];
 	board[self[0]][self[1]] = '.';
+}
+
+void	updateLastMove(t_display *highlight, int self[2], int target[2]) {
 	highlight->lastMove[0][0] = self[0];
 	highlight->lastMove[0][1] = self[1];
 	highlight->lastMove[1][0] = target[0];
 	highlight->lastMove[1][1] = target[1];
+}
+
+void	extraMoveEnPassant(char board[BOARD_H][BOARD_W], int row, int col) {
+	board[row][col] = '.';
+}
+
+// void	extraMoveCastling(char board[BOARD_H][BOARD_W], int self[2], int target[2]) {
+	
+// }
+
+void	applySpecialMoveType(char board[BOARD_H][BOARD_W], t_moves *moves, int target[2]) {
+	while (moves) {
+		if (moves->target[0] == target[0] && moves->target[1] == target[1])
+			break ;
+		moves = moves->next;
+	}
+	if (moves == NULL)
+		return ;
+	if (abs(moves->specialMove) == 1)
+		extraMoveEnPassant(board, target[0] + moves->specialMove, target[1]);
+	else if (abs(moves->specialMove) == 2)
+		return ;
+}
+
+void	makeMove(char board[BOARD_H][BOARD_W], t_display *highlight) {
+	movePieceToTarget(board, highlight->selectedPiece, highlight->cursor);
+	applySpecialMoveType(board, highlight->moves, highlight->cursor);
+	updateLastMove(highlight, highlight->selectedPiece, highlight->cursor);
 }
 
 void	handleSelection(char board[BOARD_H][BOARD_W], t_display *highlight) {
@@ -175,14 +206,28 @@ void	handleSelection(char board[BOARD_H][BOARD_W], t_display *highlight) {
 		highlight->cursor[1] == highlight->selectedPiece[1])
 		deselectPiece(highlight);
 	else if (isHighlightedMove(highlight->moves, highlight->cursor[0], highlight->cursor[1])) {
-		makeMove(board, highlight->selectedPiece, highlight->cursor, highlight);
+		makeMove(board, highlight);
 		deselectPiece(highlight);
 	}
+	else if (board[highlight->cursor[0]][highlight->cursor[1]] == '.')
+		deselectPiece(highlight);
 	else {
 		deselectPiece(highlight);
 		selectPiece(highlight);
-		getMovesAtSquare(&highlight->moves, board, highlight->selectedPiece);
+		getMovesAtSquare(&highlight->moves, board, highlight->selectedPiece, highlight->lastMove);
 	}
+}
+
+void	initHighlight(t_display *highlight) {
+	highlight->cursor[0] = 0;
+	highlight->cursor[1] = 0;
+	highlight->selectedPiece[0] = -1;
+	highlight->selectedPiece[1] = 0;
+	highlight->lastMove[0][0] = -1;
+	highlight->lastMove[0][1] = 0;
+	highlight->lastMove[1][0] = 0;
+	highlight->lastMove[1][1] = 0;
+	highlight->moves = NULL;
 }
 
 int	main(void) {
@@ -191,16 +236,8 @@ int	main(void) {
 	char			c;
 	t_display		highlight;
 
-	highlight.cursor[0] = 0;
-	highlight.cursor[1] = 0;
-	highlight.selectedPiece[0] = -1;
-	highlight.selectedPiece[1] = 0;
-	highlight.lastMove[0][0] = -1;
-	highlight.lastMove[0][1] = 0;
-	highlight.lastMove[1][0] = 0;
-	highlight.lastMove[1][1] = 0;
-	highlight.moves = NULL;
 	initBoard(board);
+	initHighlight(&highlight);
 	loadFEN(board, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
 	displayBoard(board, &highlight);
 	enableRawMode(&original);

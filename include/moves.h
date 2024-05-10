@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/05/08 13:22:16 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/09 14:59:13 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/10 16:50:18 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 typedef struct s_moves {
 	int				target[2];
+	int				specialMove;
 	struct s_moves	*next;
 }	t_moves;
 
@@ -25,7 +26,8 @@ typedef struct s_display {
 	t_moves	*moves;
 }	t_display;
 
-void	getMovesAtSquare(t_moves **moves, char board[BOARD_H][BOARD_W], int originalPosition[2]);
+void	getMovesAtSquare(t_moves **moves, char board[BOARD_H][BOARD_W], int originalPosition[2], \
+						int lastMove[2][2]);
 void	cleanupMoves(t_moves **moves);
 
 #endif

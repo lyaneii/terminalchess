@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/05/08 13:23:22 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/10 17:46:55 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/10 22:01:46 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -383,15 +383,78 @@ void	getKnightMoves(t_moves **moves, char board[BOARD_H][BOARD_W], \
 	}
 }
 
-int	kingIsAttacked(char board[BOARD_H][BOARD_W], char king) {
+t_moves	*getPiecesAttackingKing(char board[BOARD_H][BOARD_W], int king[2]) {
+	int	side = islower(board[king[0]][king[1]]) ? 1 : 0;
+	t_moves	*attackers = NULL;
+
+	getPiecesAttackingSquare(&attackers, board, king, side);
+	return attackers;
+}
+
+int	attackingPieceIsKnight(char board[BOARD_H][BOARD_W], t_moves *attackers) {
+	while (attackers) {
+		if (tolower(board[attackers->target[0]][attackers->target[1]] == 'n'))
+			return 1;
+		attackers = attackers->next;
+	}
+	return 0;
+}
+
+int	moveBlocksCheck(t_moves *attackers, char board[BOARD_H][BOARD_W], char king) {
+	if (attackingPieceIsKnight(board, attackers))
+		return 0;
 	
 }
 
-int	moveBlocksCheck(char board[BOARD_H][BOARD_W], char king) {
-	
+void	removeEmptySquareMoves(char board[BOARD_H][BOARD_W], t_moves **moves) {
+	t_moves	*remove;
+	t_moves	*current = *moves;
+
+	while (current && current->next) {
+		if (board[current->next->target[0]][current->next->target[1]] == '.') {
+			remove = current->next;
+			current->next = remove->next;
+			free(remove);
+		}
+		current = current->next;
+	}
+	current = *moves;
+	if (current && board[current->target[0]][current->target[1]] == '.') {
+		*moves = current->next;
+		free(current);
+	}
 }
 
-int	squareIsAttacked(t_moves **moves, char board[BOARD_H][BOARD_W], int target[2], int side) {
+void	removeKnightMoves(char board[BOARD_H][BOARD_W], t_moves **moves) {
+	t_moves	*remove;
+	t_moves	*current = *moves;
+
+	while (current && current->next) {
+		if (board[current->next->target[0]][current->next->target[1]] == 'n' || \
+			board[current->next->target[0]][current->next->target[1]] == 'N' ) {
+			remove = current->next;
+			current->next = remove->next;
+			free(remove);
+		}
+		current = current->next;
+	}
+	current = *moves;
+	if (current && board[current->target[0]][current->target[1]] == 'n' || \
+		current && board[current->target[0]][current->target[1]] == 'N') {
+		*moves = current->next;
+		free(current);
+	}
+}
+
+int	isOpponentsKnight(char target, char self) {
+	if (isupper(self) && target == 'n')
+		return 1;
+	if (islower(self) && target == 'N')
+		return 1;
+	return 0;
+}
+
+void	getPiecesAttackingSquare(t_moves **moves, char board[BOARD_H][BOARD_W], int target[2], int side) {
 	char piece = board[target[0]][target[1]];
 	int	range[2] = {2, 1};
 	int	knightPos[8][2] = {
@@ -417,15 +480,13 @@ int	squareIsAttacked(t_moves **moves, char board[BOARD_H][BOARD_W], int target[2
 	checkSouthWest(moves, board, target, 8, piece);
 	checkSouth(moves, board, target, 8, piece);
 	checkSouthEast(moves, board, target, 8, piece);
+	removeKnightMoves(board, moves);
 	for (int i = 0; i < 8; i++) {
 		if (!isWithinBounds(knightPos[i]))
 			continue ;
-		if (isValidTarget(board[knightPos[i][0]][knightPos[i][1]], piece))
+		if (isOpponentsKnight(board[knightPos[i][0]][knightPos[i][1]], piece))
 			addMove(moves, newMove(knightPos[i], 0));
 	}
-	if (*moves != NULL)
-		return 1;
-	return 0;
 }
 
 void	cleanupMoves(t_moves **moves) {

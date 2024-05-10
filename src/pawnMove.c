@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/05/08 13:23:22 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/10 17:03:30 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/10 17:46:55 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -381,6 +381,51 @@ void	getKnightMoves(t_moves **moves, char board[BOARD_H][BOARD_W], \
 		if (isValidTarget(board[knightPos[i][0]][knightPos[i][1]], board[start[0]][start[1]]))
 			addMove(moves, newMove(knightPos[i], 0));
 	}
+}
+
+int	kingIsAttacked(char board[BOARD_H][BOARD_W], char king) {
+	
+}
+
+int	moveBlocksCheck(char board[BOARD_H][BOARD_W], char king) {
+	
+}
+
+int	squareIsAttacked(t_moves **moves, char board[BOARD_H][BOARD_W], int target[2], int side) {
+	char piece = board[target[0]][target[1]];
+	int	range[2] = {2, 1};
+	int	knightPos[8][2] = {
+		{target[0] + range[0], target[1] + range[1]},
+		{target[0] + -range[0], target[1] + range[1]},
+		{target[0] + -range[0], target[1] + -range[1]},
+		{target[0] + range[0], target[1] + -range[1]},
+		{target[0] + range[1], target[1] + range[0]},
+		{target[0] + -range[1], target[1] + range[0]},
+		{target[0] + -range[1], target[1] + -range[0]},
+		{target[0] + range[1], target[1] + -range[0]}
+	};
+
+	if (piece == '.' && side == 1)
+		piece = 'k';
+	else if (piece == '.' && side == 0)
+		piece = 'K';
+	checkNorthWest(moves, board, target, 8, piece);
+	checkNorth(moves, board, target, 8, piece);
+	checkNorthEast(moves, board, target, 8, piece);
+	checkWest(moves, board, target, 8, piece);
+	checkEast(moves, board, target, 8, piece);
+	checkSouthWest(moves, board, target, 8, piece);
+	checkSouth(moves, board, target, 8, piece);
+	checkSouthEast(moves, board, target, 8, piece);
+	for (int i = 0; i < 8; i++) {
+		if (!isWithinBounds(knightPos[i]))
+			continue ;
+		if (isValidTarget(board[knightPos[i][0]][knightPos[i][1]], piece))
+			addMove(moves, newMove(knightPos[i], 0));
+	}
+	if (*moves != NULL)
+		return 1;
+	return 0;
 }
 
 void	cleanupMoves(t_moves **moves) {

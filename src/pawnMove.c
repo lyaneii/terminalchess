@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/05/08 13:23:22 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/10 22:01:46 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/11 15:34:40 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -383,27 +383,64 @@ void	getKnightMoves(t_moves **moves, char board[BOARD_H][BOARD_W], \
 	}
 }
 
-t_moves	*getPiecesAttackingKing(char board[BOARD_H][BOARD_W], int king[2]) {
-	int	side = islower(board[king[0]][king[1]]) ? 1 : 0;
-	t_moves	*attackers = NULL;
+void	removeKnightMoves(char board[BOARD_H][BOARD_W], t_moves **moves) {
+	t_moves	*remove;
+	t_moves	*current = *moves;
 
-	getPiecesAttackingSquare(&attackers, board, king, side);
-	return attackers;
+	while (current && current->next) {
+		if (board[current->next->target[0]][current->next->target[1]] == 'n' || \
+			board[current->next->target[0]][current->next->target[1]] == 'N' ) {
+			remove = current->next;
+			current->next = remove->next;
+			free(remove);
+		}
+		else
+			current = current->next;
+	}
+	current = *moves;
+	if (current && (board[current->target[0]][current->target[1]] == 'n' || \
+		board[current->target[0]][current->target[1]] == 'N')) {
+		*moves = current->next;
+		free(current);
+	}
 }
 
-int	attackingPieceIsKnight(char board[BOARD_H][BOARD_W], t_moves *attackers) {
-	while (attackers) {
-		if (tolower(board[attackers->target[0]][attackers->target[1]] == 'n'))
-			return 1;
-		attackers = attackers->next;
+void	removePawnMoves(char board[BOARD_H][BOARD_W], t_moves **moves) {
+	t_moves	*remove;
+	t_moves	*current = *moves;
+
+	while (current && current->next) {
+		if (board[current->next->target[0]][current->next->target[1]] == 'p' || \
+			board[current->next->target[0]][current->next->target[1]] == 'P' ) {
+			remove = current->next;
+			current->next = remove->next;
+			free(remove);
+		}
+		else
+			current = current->next;
 	}
+	current = *moves;
+	if (current && (board[current->target[0]][current->target[1]] == 'p' || \
+		board[current->target[0]][current->target[1]] == 'P')) {
+		*moves = current->next;
+		free(current);
+	}
+}
+
+int	isOpponentsKnight(char target, char self) {
+	if (isupper(self) && target == 'n')
+		return 1;
+	if (islower(self) && target == 'N')
+		return 1;
 	return 0;
 }
 
-int	moveBlocksCheck(t_moves *attackers, char board[BOARD_H][BOARD_W], char king) {
-	if (attackingPieceIsKnight(board, attackers))
-		return 0;
-	
+int	isOpponentsPawn(char target, char self) {
+	if (isupper(self) && target == 'p')
+		return 1;
+	if (islower(self) && target == 'P')
+		return 1;
+	return 0;
 }
 
 void	removeEmptySquareMoves(char board[BOARD_H][BOARD_W], t_moves **moves) {
@@ -416,42 +453,14 @@ void	removeEmptySquareMoves(char board[BOARD_H][BOARD_W], t_moves **moves) {
 			current->next = remove->next;
 			free(remove);
 		}
-		current = current->next;
+		else
+			current = current->next;
 	}
 	current = *moves;
 	if (current && board[current->target[0]][current->target[1]] == '.') {
 		*moves = current->next;
 		free(current);
 	}
-}
-
-void	removeKnightMoves(char board[BOARD_H][BOARD_W], t_moves **moves) {
-	t_moves	*remove;
-	t_moves	*current = *moves;
-
-	while (current && current->next) {
-		if (board[current->next->target[0]][current->next->target[1]] == 'n' || \
-			board[current->next->target[0]][current->next->target[1]] == 'N' ) {
-			remove = current->next;
-			current->next = remove->next;
-			free(remove);
-		}
-		current = current->next;
-	}
-	current = *moves;
-	if (current && board[current->target[0]][current->target[1]] == 'n' || \
-		current && board[current->target[0]][current->target[1]] == 'N') {
-		*moves = current->next;
-		free(current);
-	}
-}
-
-int	isOpponentsKnight(char target, char self) {
-	if (isupper(self) && target == 'n')
-		return 1;
-	if (islower(self) && target == 'N')
-		return 1;
-	return 0;
 }
 
 void	getPiecesAttackingSquare(t_moves **moves, char board[BOARD_H][BOARD_W], int target[2], int side) {
@@ -467,6 +476,11 @@ void	getPiecesAttackingSquare(t_moves **moves, char board[BOARD_H][BOARD_W], int
 		{target[0] + -range[1], target[1] + -range[0]},
 		{target[0] + range[1], target[1] + -range[0]}
 	};
+	int	pawnDirection = side == 1 ? 1 : -1;
+	int	pawnPos[2][2] = {
+		{target[0] + pawnDirection, target[1] - 1},
+		{target[0] + pawnDirection, target[1] + 1}
+	};
 
 	if (piece == '.' && side == 1)
 		piece = 'k';
@@ -481,11 +495,88 @@ void	getPiecesAttackingSquare(t_moves **moves, char board[BOARD_H][BOARD_W], int
 	checkSouth(moves, board, target, 8, piece);
 	checkSouthEast(moves, board, target, 8, piece);
 	removeKnightMoves(board, moves);
+	removePawnMoves(board, moves);
 	for (int i = 0; i < 8; i++) {
 		if (!isWithinBounds(knightPos[i]))
 			continue ;
 		if (isOpponentsKnight(board[knightPos[i][0]][knightPos[i][1]], piece))
 			addMove(moves, newMove(knightPos[i], 0));
+	}
+	for (int i = 0; i < 2; i++) {
+		if (!isWithinBounds(pawnPos[i]))
+			continue ;
+		if (isOpponentsPawn(board[pawnPos[i][0]][pawnPos[i][1]], piece))
+			addMove(moves, newMove(pawnPos[i], 0));
+	}
+	removeEmptySquareMoves(board, moves);
+}
+
+void	getKingPosition(char board[BOARD_H][BOARD_W], int side, int kingPos[2]) {
+	char kingPiece = side == 1 ? 'k' : 'K';
+
+	for (int i = 0; i < BOARD_H; i++) {
+		for (int j = 0; j < BOARD_W; j++) {
+			if (board[i][j] == kingPiece) {
+				kingPos[0] = i;
+				kingPos[1] = j;
+				return ;
+			}
+		}
+	}
+}
+
+t_moves	*getPiecesAttackingKing(char board[BOARD_H][BOARD_W], int piece[2]) {
+	int		side = islower(board[piece[0]][piece[1]]) ? 1 : 0;
+	int		king[2] = {0,0};
+	t_moves	*attackers = NULL;
+
+	getKingPosition(board, side, king);
+	getPiecesAttackingSquare(&attackers, board, king, side);
+	return attackers;
+}
+
+void	copyBoard(char dest[BOARD_H][BOARD_W], char src[BOARD_H][BOARD_W]) {
+	for (int i = 0; i < BOARD_H; i++) {
+		for (int j = 0; j < BOARD_W; j++)
+			dest[i][j] = src[i][j];
+	}
+}
+
+void	tryMove(char board[BOARD_H][BOARD_W], int self[2], int target[2]) {
+	board[target[0]][target[1]] = board[self[0]][self[1]];
+	board[self[0]][self[1]] = '.';
+}
+
+int	moveBlocksCheck(int target[2], char board[BOARD_H][BOARD_W], int piece[2]) {
+	char	copy[BOARD_H][BOARD_W];
+	t_moves	*attackers;
+
+	copyBoard(copy, board);
+	tryMove(copy, piece, target);
+	attackers = getPiecesAttackingKing(copy, target);
+	if (attackers == NULL)
+		return 1;
+	cleanupMoves(&attackers);
+	return 0;
+}
+
+void	removeMovesNotBlockingCheck(t_moves **moves, char board[BOARD_H][BOARD_W], int piece[2]) {
+	t_moves	*remove;
+	t_moves	*current = *moves;
+
+	while (current && current->next) {
+		if (!moveBlocksCheck(current->next->target, board, piece)) {
+			remove = current->next;
+			current->next = remove->next;
+			free(remove);
+		}
+		else
+			current = current->next;
+	}
+	current = *moves;
+	if (current && !moveBlocksCheck(current->target, board, piece)) {
+		*moves = current->next;
+		free(current);
 	}
 }
 
@@ -503,6 +594,7 @@ void	cleanupMoves(t_moves **moves) {
 void	getMovesAtSquare(t_moves **moves, char board[BOARD_H][BOARD_W], int originalPosition[2], \
 						int lastMove[2][2]) {
 	int	position[2] = {originalPosition[0], originalPosition[1]};
+	t_moves	*attackers;
 
 	if (board[position[0]][position[1]] == '.')
 		return ;
@@ -518,4 +610,7 @@ void	getMovesAtSquare(t_moves **moves, char board[BOARD_H][BOARD_W], int origina
 		getKingMoves(moves, board, position);
 	else if (tolower(board[position[0]][position[1]]) == 'n')
 		getKnightMoves(moves, board, position);
+	attackers = getPiecesAttackingKing(board, originalPosition);
+	cleanupMoves(&attackers);
+	removeMovesNotBlockingCheck(moves, board, originalPosition);
 }

@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/05/12 17:32:24 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/12 17:57:51 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/12 19:01:54 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,5 +16,6 @@
 
 int		isHighlightedMove(t_moves *moves, int row, int col);
 int		handleSelection(char board[BOARD_H][BOARD_W], t_boardInfo *info);
-void	handleArrowKey(char c, t_boardInfo *highlight);
+void	handleArrowKey(char c, t_boardInfo *info);
+void	handleCharControls(char c, t_boardInfo *info);
 #endif

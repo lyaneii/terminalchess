@@ -6,12 +6,13 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 14:12:07 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/12 17:53:09 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/12 19:02:04 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include <stdio.h>
+#include <string.h>
 #include "moves.h"
 #include "defines.h"
 #include "terminalMode.h"
@@ -50,6 +51,8 @@ int	main(void) {
 	while (read(STDIN_FILENO, &c, 1) && c != 'q' && exitCondition == 0) {
 		if (c == ' ')
 			exitCondition = handleSelection(board, &info);
+		else if (strchr(CHAR_CONTROLS, c))
+			handleCharControls(c, &info);
 		else if (c == '\033')
 			handleArrowKey(c, &info);
 		displayBoard(board, &info);

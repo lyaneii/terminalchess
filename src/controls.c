@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/05/12 17:31:33 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/12 17:54:54 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/12 19:04:50 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,16 +73,27 @@ int	handleSelection(char board[BOARD_H][BOARD_W], t_boardInfo *info) {
 	return 0;
 }
 
-void	handleArrowKey(char c, t_boardInfo *highlight) {
+void	handleArrowKey(char c, t_boardInfo *info) {
 	if (read(STDIN_FILENO, &c, 1) && c == '[') {
 		read(STDIN_FILENO, &c, 1);
 		if (c == 'A')
-			highlight->cursor[0] - 1 >= 0 ? highlight->cursor[0]-- : 0;
+			info->cursor[0] - 1 >= 0 ? info->cursor[0]-- : 0;
 		else if (c == 'B')
-			highlight->cursor[0] + 1 < BOARD_H ? highlight->cursor[0]++ : BOARD_H;
+			info->cursor[0] + 1 < BOARD_H ? info->cursor[0]++ : BOARD_H;
 		else if (c == 'C')
-			highlight->cursor[1] + 1 < BOARD_W ? highlight->cursor[1]++ : BOARD_H;
+			info->cursor[1] + 1 < BOARD_W ? info->cursor[1]++ : BOARD_H;
 		else if (c == 'D')
-			highlight->cursor[1] - 1 >= 0 ? highlight->cursor[1]-- : 0;
+			info->cursor[1] - 1 >= 0 ? info->cursor[1]-- : 0;
 	}
+}
+
+void	handleCharControls(char c, t_boardInfo *info) {
+	if (c == CHAR_CONTROLS[0])
+		info->cursor[0] - 1 >= 0 ? info->cursor[0]-- : 0;
+	else if (c == CHAR_CONTROLS[1])
+		info->cursor[1] - 1 >= 0 ? info->cursor[1]-- : 0;
+	else if (c == CHAR_CONTROLS[2])
+		info->cursor[0] + 1 < BOARD_H ? info->cursor[0]++ : BOARD_H;
+	else if (c == CHAR_CONTROLS[3])
+		info->cursor[1] + 1 < BOARD_W ? info->cursor[1]++ : BOARD_H;
 }

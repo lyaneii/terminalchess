@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 14:12:07 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/12 02:14:43 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/12 14:41:16 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ int	isHighlightedMove(t_moves *moves, int row, int col) {
 	return 0;
 }
 
-void	displayBoard(const char board[BOARD_H][BOARD_W], t_display *highlight) {
+void	displayBoard(const char board[BOARD_H][BOARD_W], t_boardInfo *highlight) {
 	printf(LOAD_CURSOR_POS);
 	for (int i = 0; i < BOARD_H; i++) {
 		for (int j = 0; j < BOARD_W; j++) {
@@ -110,7 +110,7 @@ void	putPiece(char board[BOARD_H][BOARD_W], const char piece, const char coordin
 
 
 
-void	handleArrowKey(char c, t_display *highlight) {
+void	handleArrowKey(char c, t_boardInfo *highlight) {
 	if (read(STDIN_FILENO, &c, 1) && c == '[') {
 		read(STDIN_FILENO, &c, 1);
 		if (c == 'A')
@@ -124,12 +124,12 @@ void	handleArrowKey(char c, t_display *highlight) {
 	}
 }
 
-void	deselectPiece(t_display *highlight) {
+void	deselectPiece(t_boardInfo *highlight) {
 	highlight->selectedPiece[0] = -1;
 	cleanupMoves(&highlight->moves);
 }
 
-void	selectPiece(t_display *highlight) {
+void	selectPiece(t_boardInfo *highlight) {
 	highlight->selectedPiece[0] = highlight->cursor[0];
 	highlight->selectedPiece[1] = highlight->cursor[1];
 }
@@ -139,7 +139,7 @@ void	movePieceToTarget(char board[BOARD_H][BOARD_W], int self[2], int target[2])
 	board[self[0]][self[1]] = '.';
 }
 
-void	updateLastMove(t_display *highlight, int self[2], int target[2]) {
+void	updateLastMove(t_boardInfo *highlight, int self[2], int target[2]) {
 	highlight->lastMove[0][0] = self[0];
 	highlight->lastMove[0][1] = self[1];
 	highlight->lastMove[1][0] = target[0];
@@ -150,11 +150,47 @@ void	extraMoveEnPassant(char board[BOARD_H][BOARD_W], int row, int col) {
 	board[row][col] = '.';
 }
 
-// void	extraMoveCastling(char board[BOARD_H][BOARD_W], int self[2], int target[2]) {
-	
-// }
+void	extraMoveCastling(char board[BOARD_H][BOARD_W], int target[2], int castleRights[2][2]) {
+	int		castleSide = target[1] == 2 ? 0 : 1;
+	int		rookOffset = target[1] == 2 ? 1 : -1;
+	int 	rookCastlePos[2] = {0, 7};
 
-void	applySpecialMoveType(char board[BOARD_H][BOARD_W], t_moves *moves, int target[2]) {
+	board[target[0]][target[1] + rookOffset] = board[target[0]][rookCastlePos[castleSide]];
+	board[target[0]][rookCastlePos[castleSide]] = '.';
+	if (board[target[0]][target[1] + rookOffset] == 'r') {
+		castleRights[1][0] = 0;
+		castleRights[1][1] = 0;
+	}
+	else {
+		castleRights[0][0] = 0;
+		castleRights[0][1] = 0;
+	}
+}
+
+void	updateRookCastlingRights(char rook, int castleRights[2][2], int rookPos[2]) {
+	if (rook == 'r' && rookPos[0] == 0 && rookPos[1] == 0)
+		castleRights[1][1] = 0;
+	if (rook == 'R' && rookPos[0] == 7 && rookPos[1] == 0)
+		castleRights[0][1] = 0;
+	if (rook == 'r' && rookPos[0] == 0 && rookPos[1] == 7)
+		castleRights[1][0] = 0;
+	if (rook == 'R' && rookPos[0] == 7 && rookPos[1] == 7)
+		castleRights[0][0] = 0;
+}
+
+void	updateKingCastlingRights(char king, int castleRights[2][2]) {
+	if (king == 'k') {
+		castleRights[1][0] = 0;
+		castleRights[1][1] = 0;
+	}
+	else {
+		castleRights[0][0] = 0;
+		castleRights[0][1] = 0;
+	}
+}
+
+void	applySpecialMoves(char board[BOARD_H][BOARD_W], t_moves *moves, \
+							int target[2], int castleRights[2][2], int self[2]) {
 	while (moves) {
 		if (moves->target[0] == target[0] && moves->target[1] == target[1])
 			break ;
@@ -164,30 +200,36 @@ void	applySpecialMoveType(char board[BOARD_H][BOARD_W], t_moves *moves, int targ
 		return ;
 	if (abs(moves->specialMove) == 1)
 		extraMoveEnPassant(board, target[0] + moves->specialMove, target[1]);
-	else if (abs(moves->specialMove) == 2)
-		return ;
+	else if (moves->specialMove == 2)
+		extraMoveCastling(board, target, castleRights);
+	else if (tolower(board[target[0]][target[1]] == 'r'))
+		updateRookCastlingRights(board[target[0]][target[1]], castleRights, self);
+	else if (tolower(board[target[0]][target[1]] == 'k'))
+		updateKingCastlingRights(board[target[0]][target[1]], castleRights);
 }
 
-void	makeMove(char board[BOARD_H][BOARD_W], t_display *highlight) {
-	movePieceToTarget(board, highlight->selectedPiece, highlight->cursor);
-	applySpecialMoveType(board, highlight->moves, highlight->cursor);
-	updateLastMove(highlight, highlight->selectedPiece, highlight->cursor);
+void	makeMove(char board[BOARD_H][BOARD_W], t_boardInfo *info) {
+	movePieceToTarget(board, info->selectedPiece, info->cursor);
+	applySpecialMoves(board, info->moves, info->cursor, \
+						info->castleRights, info->selectedPiece);
+	updateLastMove(info, info->selectedPiece, info->cursor);
+	info->turn = info->turn == 1 ? 0 : 1;
 }
 
-void	handleSelection(char board[BOARD_H][BOARD_W], t_display *highlight) {
-	if (highlight->cursor[0] == highlight->selectedPiece[0] && \
-		highlight->cursor[1] == highlight->selectedPiece[1])
-		deselectPiece(highlight);
-	else if (isHighlightedMove(highlight->moves, highlight->cursor[0], highlight->cursor[1])) {
-		makeMove(board, highlight);
-		deselectPiece(highlight);
+void	handleSelection(char board[BOARD_H][BOARD_W], t_boardInfo *info) {
+	if (info->cursor[0] == info->selectedPiece[0] && \
+		info->cursor[1] == info->selectedPiece[1])
+		deselectPiece(info);
+	else if (isHighlightedMove(info->moves, info->cursor[0], info->cursor[1])) {
+		makeMove(board, info);
+		deselectPiece(info);
 	}
-	else if (board[highlight->cursor[0]][highlight->cursor[1]] == '.')
-		deselectPiece(highlight);
+	else if (board[info->cursor[0]][info->cursor[1]] == '.')
+		deselectPiece(info);
 	else {
-		deselectPiece(highlight);
-		selectPiece(highlight);
-		getMovesAtSquare(&highlight->moves, board, highlight->selectedPiece, highlight->lastMove);
+		deselectPiece(info);
+		selectPiece(info);
+		getMovesAtSquare(&info->moves, board, info->selectedPiece, info);
 	}
 }
 
@@ -195,21 +237,21 @@ int	main(void) {
 	char			board[BOARD_H][BOARD_W];
 	struct termios	original;
 	char			c;
-	t_display		highlight;
+	t_boardInfo		info;
 
 	initialiseEmptyBoard(board);
-	initialiseHighlight(&highlight);
-	loadFEN(board, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
-	displayBoard(board, &highlight);
+	initialiseHighlight(&info);
+	loadFEN(board, "rnbqk2r/pppppppp/8/8/8/8/PPPPPPPP/RNBQK2R b KQkq", &info);
+	displayBoard(board, &info);
 	enableRawMode(&original);
 	while (read(STDIN_FILENO, &c, 1) && c != 'q') {
 		if (c == ' ')
-			handleSelection(board, &highlight);
+			handleSelection(board, &info);
 		else if (c == '\033')
-			handleArrowKey(c, &highlight);
-		displayBoard(board, &highlight);
+			handleArrowKey(c, &info);
+		displayBoard(board, &info);
 	}
-	cleanupMoves(&highlight.moves);
+	cleanupMoves(&info.moves);
 	disableRawMode(&original);
 	return 0;
 }

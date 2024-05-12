@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 14:12:07 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/12 14:41:16 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/12 17:29:27 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,10 +170,10 @@ void	extraMoveCastling(char board[BOARD_H][BOARD_W], int target[2], int castleRi
 void	updateRookCastlingRights(char rook, int castleRights[2][2], int rookPos[2]) {
 	if (rook == 'r' && rookPos[0] == 0 && rookPos[1] == 0)
 		castleRights[1][1] = 0;
-	if (rook == 'R' && rookPos[0] == 7 && rookPos[1] == 0)
-		castleRights[0][1] = 0;
 	if (rook == 'r' && rookPos[0] == 0 && rookPos[1] == 7)
 		castleRights[1][0] = 0;
+	if (rook == 'R' && rookPos[0] == 7 && rookPos[1] == 0)
+		castleRights[0][1] = 0;
 	if (rook == 'R' && rookPos[0] == 7 && rookPos[1] == 7)
 		castleRights[0][0] = 0;
 }
@@ -190,7 +190,7 @@ void	updateKingCastlingRights(char king, int castleRights[2][2]) {
 }
 
 void	applySpecialMoves(char board[BOARD_H][BOARD_W], t_moves *moves, \
-							int target[2], int castleRights[2][2], int self[2]) {
+							int target[2], int castleRights[2][2]) {
 	while (moves) {
 		if (moves->target[0] == target[0] && moves->target[1] == target[1])
 			break ;
@@ -202,27 +202,40 @@ void	applySpecialMoves(char board[BOARD_H][BOARD_W], t_moves *moves, \
 		extraMoveEnPassant(board, target[0] + moves->specialMove, target[1]);
 	else if (moves->specialMove == 2)
 		extraMoveCastling(board, target, castleRights);
-	else if (tolower(board[target[0]][target[1]] == 'r'))
-		updateRookCastlingRights(board[target[0]][target[1]], castleRights, self);
-	else if (tolower(board[target[0]][target[1]] == 'k'))
+	else if (tolower(board[target[0]][target[1]]) == 'r')
+		updateRookCastlingRights(board[target[0]][target[1]], castleRights, target);
+	else if (tolower(board[target[0]][target[1]]) == 'k')
 		updateKingCastlingRights(board[target[0]][target[1]], castleRights);
+}
+
+int	isCheckmate(char board[BOARD_H][BOARD_W], t_boardInfo *info) {
+	if (isCheckmateBlack(board, info)) {
+		printf("%sCheckmate, white wins!\n", CURSOR_DOWN_2);
+		return 1;
+	}
+	if (isCheckmateWhite(board, info)) {
+		printf("%sCheckmate, black wins!\n", CURSOR_DOWN_2);
+		return 1;
+	}
+	return 0;
 }
 
 void	makeMove(char board[BOARD_H][BOARD_W], t_boardInfo *info) {
 	movePieceToTarget(board, info->selectedPiece, info->cursor);
-	applySpecialMoves(board, info->moves, info->cursor, \
-						info->castleRights, info->selectedPiece);
+	applySpecialMoves(board, info->moves, info->cursor, info->castleRights);
 	updateLastMove(info, info->selectedPiece, info->cursor);
 	info->turn = info->turn == 1 ? 0 : 1;
 }
 
-void	handleSelection(char board[BOARD_H][BOARD_W], t_boardInfo *info) {
+int	handleSelection(char board[BOARD_H][BOARD_W], t_boardInfo *info) {
 	if (info->cursor[0] == info->selectedPiece[0] && \
 		info->cursor[1] == info->selectedPiece[1])
 		deselectPiece(info);
 	else if (isHighlightedMove(info->moves, info->cursor[0], info->cursor[1])) {
 		makeMove(board, info);
 		deselectPiece(info);
+		if (isCheckmate(board, info))
+			return 1;
 	}
 	else if (board[info->cursor[0]][info->cursor[1]] == '.')
 		deselectPiece(info);
@@ -231,6 +244,7 @@ void	handleSelection(char board[BOARD_H][BOARD_W], t_boardInfo *info) {
 		selectPiece(info);
 		getMovesAtSquare(&info->moves, board, info->selectedPiece, info);
 	}
+	return 0;
 }
 
 int	main(void) {
@@ -238,19 +252,25 @@ int	main(void) {
 	struct termios	original;
 	char			c;
 	t_boardInfo		info;
+	int				exitCondition = 0;
 
 	initialiseEmptyBoard(board);
 	initialiseHighlight(&info);
-	loadFEN(board, "rnbqk2r/pppppppp/8/8/8/8/PPPPPPPP/RNBQK2R b KQkq", &info);
+	loadFEN(board, "rnb1kb1r/pppppppp/8/8/3q4/8/PPPP1nPP/RNB2RK1 b kq", &info);
 	displayBoard(board, &info);
 	enableRawMode(&original);
-	while (read(STDIN_FILENO, &c, 1) && c != 'q') {
+	if (isCheckmate(board, &info)) {
+		disableRawMode(&original);
+		return 0;
+	}
+	while (read(STDIN_FILENO, &c, 1) && c != 'q' && exitCondition == 0) {
 		if (c == ' ')
-			handleSelection(board, &info);
+			exitCondition = handleSelection(board, &info);
 		else if (c == '\033')
 			handleArrowKey(c, &info);
 		displayBoard(board, &info);
 	}
+	printf(CURSOR_DOWN_2);
 	cleanupMoves(&info.moves);
 	disableRawMode(&original);
 	return 0;

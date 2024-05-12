@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 21:34:04 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/12 01:48:34 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/12 16:59:07 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 
 # define SAVE_CURSOR_POS "\033[s"
 # define LOAD_CURSOR_POS "\033[u"
+# define CURSOR_DOWN_2 "\033[2E"
 
 # define BOARD_W 8
 # define BOARD_H 8

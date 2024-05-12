@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/05/12 01:39:44 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/12 02:55:24 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/12 16:53:30 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,4 +81,58 @@ t_moves	*getPiecesAttackingKing(char board[BOARD_H][BOARD_W], int piece[2]) {
 	getKingPosition(board, side, king);
 	getPiecesAttackingSquare(&attackers, board, king, side);
 	return attackers;
+}
+
+int	isCheckmateWhite(char board[BOARD_H][BOARD_W], t_boardInfo *info) {
+	int	king[2] = {-1, -1};
+	t_moves	*moves = NULL;
+	t_moves	*attackers;
+
+	getKingPosition(board, 0, king);
+	attackers = getPiecesAttackingKing(board, king);
+	if (attackers == NULL)
+		return 0;
+	cleanupMoves(&attackers);
+	for (size_t i = 0; i < BOARD_H; i++) {
+		for (size_t j = 0; j < BOARD_W; j++) {
+			if (isupper(board[i][j])) {
+				getMovesAtSquare(&moves, board, (int[2]){i, j}, info);
+				if (moves != NULL) {
+					cleanupMoves(&moves);
+					return 0;
+				}
+			}
+		}
+	}
+	if (moves == NULL)
+		return 1;
+	cleanupMoves(&moves);
+	return 0;
+}
+
+int	isCheckmateBlack(char board[BOARD_H][BOARD_W], t_boardInfo *info) {
+	int	king[2] = {-1, -1};
+	t_moves	*moves = NULL;
+	t_moves	*attackers;
+
+	getKingPosition(board, 1, king);
+	attackers = getPiecesAttackingKing(board, king);
+	if (attackers == NULL)
+		return 0;
+	cleanupMoves(&attackers);
+	for (size_t i = 0; i < BOARD_H; i++) {
+		for (size_t j = 0; j < BOARD_W; j++) {
+			if (islower(board[i][j])) {
+				getMovesAtSquare(&moves, board, (int[2]){i, j}, info);
+				if (moves != NULL) {
+					cleanupMoves(&moves);
+					return 0;
+				}
+			}
+		}
+	}
+	if (moves == NULL)
+		return 1;
+	cleanupMoves(&moves);
+	return 0;
 }

@@ -6,12 +6,12 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/05/12 17:32:24 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/12 17:55:10 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/12 17:57:51 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef TERMINAL_CHESS_CONTROLS_H
-# define TERMINAL_CHESS_CONTROLS_H
+#ifndef TERMINALCHESS_CONTROLS_H
+# define TERMINALCHESS_CONTROLS_H
 # include "moves.h"
 
 int		isHighlightedMove(t_moves *moves, int row, int col);

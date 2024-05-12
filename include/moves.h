@@ -6,12 +6,12 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/05/08 13:22:16 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/12 17:54:04 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/12 17:58:13 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef TERMINAL_CHESS_MOVES_H
-# define TERMINAL_CHESS_MOVES_H
+#ifndef TERMINALCHESS_MOVES_H
+# define TERMINALCHESS_MOVES_H
 # include "defines.h"
 
 typedef struct s_moves {

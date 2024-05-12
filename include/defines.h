@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 21:34:04 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/09 14:50:28 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/12 01:48:34 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,11 @@
 # define BLUE "\033[1;34m"
 # define WHITE "\033[1;37m"
 # define RESET "\033[0m"
+
+# define START_RANK_W 6
+# define START_RANK_B 1
+# define EN_PASSANT_RANK_W 3
+# define EN_PASSANT_RANK_B 4
 
 # define SAVE_CURSOR_POS "\033[s"
 # define LOAD_CURSOR_POS "\033[u"

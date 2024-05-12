@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 14:12:07 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/11 14:23:07 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/12 02:14:43 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "moves.h"
+#include "initialise.h"
 
 void	displayPieceSet(char piece, int highlight, int moves, int lastMove) {
 	if (lastMove)
@@ -107,35 +108,7 @@ void	putPiece(char board[BOARD_H][BOARD_W], const char piece, const char coordin
 	board[index[0]][index[1]] = piece;
 }
 
-void	loadFEN(char board[BOARD_H][BOARD_W], const char *FEN) {
-	int	index[2] = {0, 0};
 
-	for (size_t i = 0; FEN[i] && FEN[i] != ' '; i++) {
-		if (FEN[i] == '/') {
-			index[0]++;
-			continue ;
-		}
-		if (isdigit(FEN[i])) {
-			index[1] += FEN[i] - '0';
-			if (index[1] == 8)
-				index[1] = 0;
-			continue ;
-		}
-		board[index[0]][index[1]] = FEN[i];
-		index[1]++;
-		if (index[1] == 8)
-			index[1] = 0;
-	}
-}
-
-void	initBoard(char board[BOARD_H][BOARD_W]) {
-	printf(SAVE_CURSOR_POS);
-	for (size_t i = 0; i < BOARD_H; i++) {
-		for (size_t j = 0; j < BOARD_W; j++) {
-			board[i][j] = '.';
-		}
-	}
-}
 
 void	handleArrowKey(char c, t_display *highlight) {
 	if (read(STDIN_FILENO, &c, 1) && c == '[') {
@@ -218,26 +191,14 @@ void	handleSelection(char board[BOARD_H][BOARD_W], t_display *highlight) {
 	}
 }
 
-void	initHighlight(t_display *highlight) {
-	highlight->cursor[0] = 0;
-	highlight->cursor[1] = 0;
-	highlight->selectedPiece[0] = -1;
-	highlight->selectedPiece[1] = 0;
-	highlight->lastMove[0][0] = -1;
-	highlight->lastMove[0][1] = 0;
-	highlight->lastMove[1][0] = 0;
-	highlight->lastMove[1][1] = 0;
-	highlight->moves = NULL;
-}
-
 int	main(void) {
 	char			board[BOARD_H][BOARD_W];
 	struct termios	original;
 	char			c;
 	t_display		highlight;
 
-	initBoard(board);
-	initHighlight(&highlight);
+	initialiseEmptyBoard(board);
+	initialiseHighlight(&highlight);
 	loadFEN(board, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
 	displayBoard(board, &highlight);
 	enableRawMode(&original);

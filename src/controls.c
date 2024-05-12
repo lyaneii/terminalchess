@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/05/12 17:31:33 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/12 19:04:50 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/12 23:45:08 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static void	updateLastMove(t_boardInfo *highlight, int self[2], int target[2]) {
 
 static void	makeMove(char board[BOARD_H][BOARD_W], t_boardInfo *info) {
 	movePieceToTarget(board, info->selectedPiece, info->cursor);
-	applySpecialMoves(board, info->moves, info->cursor, info->castleRights);
+	applySpecialMoves(board, info->moves, info);
 	updateLastMove(info, info->selectedPiece, info->cursor);
 	info->turn = info->turn == 1 ? 0 : 1;
 }

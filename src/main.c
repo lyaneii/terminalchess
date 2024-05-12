@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 14:12:07 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/12 19:02:04 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/12 23:15:43 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,19 +42,19 @@ static void exitCleanup(t_moves **moves, struct termios *term) {
 int	main(void) {
 	char			board[BOARD_H][BOARD_W];
 	struct termios	original;
-	char			c;
+	char			input;
 	t_boardInfo		info;
 	int				exitCondition = 0;
 
 	if (!setupGame(board, &original, &info))
 		return 0;
-	while (read(STDIN_FILENO, &c, 1) && c != 'q' && exitCondition == 0) {
-		if (c == ' ')
+	while (read(STDIN_FILENO, &input, 1) && input != 'q' && exitCondition == 0) {
+		if (input == CHAR_SELECT)
 			exitCondition = handleSelection(board, &info);
-		else if (strchr(CHAR_CONTROLS, c))
-			handleCharControls(c, &info);
-		else if (c == '\033')
-			handleArrowKey(c, &info);
+		else if (strchr(CHAR_CONTROLS, input))
+			handleCharControls(input, &info);
+		else if (input == '\033')
+			handleArrowKey(input, &info);
 		displayBoard(board, &info);
 	}
 	exitCleanup(&info.moves, &original);

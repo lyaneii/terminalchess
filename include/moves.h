@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/05/08 13:22:16 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/12 17:58:13 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/12 23:44:58 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void	getPiecesAttackingSquare(t_moves **moves, char board[BOARD_H][BOARD_W], \
 								int target[2], int side);
 void	removeMovesNotBlockingCheck(t_moves **moves, char board[BOARD_H][BOARD_W], int piece[2]);
 void	applySpecialMoves(char board[BOARD_H][BOARD_W], t_moves *moves, \
-							int target[2], int castleRights[2][2]);
+							t_boardInfo *info);
 
 int		isCheckmate(char board[BOARD_H][BOARD_W], t_boardInfo *info);
 #endif

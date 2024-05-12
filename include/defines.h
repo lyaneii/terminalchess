@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 21:34:04 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/12 19:01:15 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/12 23:05:24 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@
 # define LOAD_CURSOR_POS "\033[u"
 # define CURSOR_DOWN_2 "\033[2E"
 # define CHAR_CONTROLS "wasd"
+# define CHAR_SELECT ' '
 
 # define BOARD_W 8
 # define BOARD_H 8
@@ -36,5 +37,5 @@
 # define HIGHLIGHT "❏"
 # define MOVES "◼"
 # define LAST_MOVE "⛶"
-// ◻⛶
+
 #endif

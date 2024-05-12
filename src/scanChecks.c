@@ -6,12 +6,13 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/05/12 01:39:44 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/12 16:53:30 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/12 17:50:33 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 #include <ctype.h>
+#include <stdio.h>
 #include "moves.h"
 
 static void	copyBoard(char dest[BOARD_H][BOARD_W], char src[BOARD_H][BOARD_W]) {
@@ -83,7 +84,7 @@ t_moves	*getPiecesAttackingKing(char board[BOARD_H][BOARD_W], int piece[2]) {
 	return attackers;
 }
 
-int	isCheckmateWhite(char board[BOARD_H][BOARD_W], t_boardInfo *info) {
+static int	isCheckmateWhite(char board[BOARD_H][BOARD_W], t_boardInfo *info) {
 	int	king[2] = {-1, -1};
 	t_moves	*moves = NULL;
 	t_moves	*attackers;
@@ -110,7 +111,7 @@ int	isCheckmateWhite(char board[BOARD_H][BOARD_W], t_boardInfo *info) {
 	return 0;
 }
 
-int	isCheckmateBlack(char board[BOARD_H][BOARD_W], t_boardInfo *info) {
+static int	isCheckmateBlack(char board[BOARD_H][BOARD_W], t_boardInfo *info) {
 	int	king[2] = {-1, -1};
 	t_moves	*moves = NULL;
 	t_moves	*attackers;
@@ -134,5 +135,17 @@ int	isCheckmateBlack(char board[BOARD_H][BOARD_W], t_boardInfo *info) {
 	if (moves == NULL)
 		return 1;
 	cleanupMoves(&moves);
+	return 0;
+}
+
+int	isCheckmate(char board[BOARD_H][BOARD_W], t_boardInfo *info) {
+	if (isCheckmateBlack(board, info)) {
+		printf("%sCheckmate, white wins!\n", CURSOR_DOWN_2);
+		return 1;
+	}
+	if (isCheckmateWhite(board, info)) {
+		printf("%sCheckmate, black wins!\n", CURSOR_DOWN_2);
+		return 1;
+	}
 	return 0;
 }

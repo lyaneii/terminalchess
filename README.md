@@ -35,8 +35,8 @@ To `select a piece or move`, you can use `Spacebar`.\
 To `deselect a piece`, you can `select an empty square` or `select the highlighted piece` again.\
 A `selected piece` and their `available moves` are highlighted in `yellow`.\
 `Selecting a move` highlighted in `yellow` will `perform the move`.\
-The `last move` is highlighted in `green`, along with a rounded square indicating where it was moved from.
-
+The `last move` is highlighted in `green`, along with a rounded square indicating where it was moved from.\
+When a `pawn` is on a `promotion square`, you can use your `left` and `right` keys to `cycle through the pieces`. To `confirm` you press the `select` key again.
 ## Editing keybinds
 As of now the only way to change keybinds is to go into the code and change the variables in `include/defines.h`, here is an example of the original:
 ```c

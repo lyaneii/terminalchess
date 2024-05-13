@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/05/12 17:38:59 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/12 17:55:17 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/13 13:40:52 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,14 @@
 #include "moves.h"
 #include "controls.h"
 
-static void	displayPieceSet(char piece, int highlight, int moves, int lastMove) {
+static void	displayPieceSet(char piece, int cursor, int moves, int lastMove) {
 	if (lastMove)
 		printf(GREEN);
 	else if (moves)
 		printf(YELLOW);
 	else if (islower(piece))
 		printf(WHITE);
-	if (highlight)
+	if (cursor)
 		printf(RED);
 	piece = tolower(piece);
 	if (piece == 'p')
@@ -42,7 +42,7 @@ static void	displayPieceSet(char piece, int highlight, int moves, int lastMove) 
 			printf(LAST_MOVE);
 		else if (moves)
 			printf(MOVES);
-		else if (highlight)
+		else if (cursor)
 			printf(HIGHLIGHT);
 		else
 			printf(FILL);

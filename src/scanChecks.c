@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/05/12 01:39:44 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/12 17:50:33 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/13 19:04:07 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,14 @@
 #include <stdio.h>
 #include "moves.h"
 
-static void	copyBoard(char dest[BOARD_H][BOARD_W], char src[BOARD_H][BOARD_W]) {
+void	copyBoard(char dest[BOARD_H][BOARD_W], char src[BOARD_H][BOARD_W]) {
 	for (int i = 0; i < BOARD_H; i++) {
 		for (int j = 0; j < BOARD_W; j++)
 			dest[i][j] = src[i][j];
 	}
 }
 
-static void	tryMove(char board[BOARD_H][BOARD_W], int self[2], int target[2]) {
+void	tryMove(char board[BOARD_H][BOARD_W], int self[2], int target[2]) {
 	board[target[0]][target[1]] = board[self[0]][self[1]];
 	board[self[0]][self[1]] = '.';
 }

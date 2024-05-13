@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/05/08 13:23:22 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/12 23:05:58 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/13 19:11:45 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ void	getPawnMoves(t_moves **moves, char board[BOARD_H][BOARD_W], \
 			getPossibleMoves(moves, board, start, moveRangeBlack);
 		}
 		if (enPassantIsPossible(board, start, lastMove))
-			addMove(moves, newMove((int[2]){lastMove[1][0] + 1, lastMove[1][1]}, -1));
+			addMove(moves, newMove(start, (int[2]){lastMove[1][0] + 1, lastMove[1][1]}, -1));
 	}
 	else {
 		getPossibleMoves(moves, board, start, captRangeWhite);
@@ -80,6 +80,6 @@ void	getPawnMoves(t_moves **moves, char board[BOARD_H][BOARD_W], \
 			getPossibleMoves(moves, board, start, moveRangeWhite);
 		}
 		if (enPassantIsPossible(board, start, lastMove))
-			addMove(moves, newMove((int[2]){lastMove[1][0] - 1, lastMove[1][1]}, 1));
+			addMove(moves, newMove(start, (int[2]){lastMove[1][0] - 1, lastMove[1][1]}, 1));
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/05/08 13:22:16 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/12 23:44:58 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/13 19:08:58 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 # include "defines.h"
 
 typedef struct s_moves {
+	int				self[2];
 	int				target[2];
 	int				specialMove;
 	struct s_moves	*next;
@@ -30,7 +31,7 @@ typedef struct s_boardInfo {
 }	t_boardInfo;
 
 
-t_moves	*newMove(int target[2], int specialMove);
+t_moves	*newMove(int self[2], int target[2], int specialMove);
 void	addMove(t_moves **head, t_moves *move);
 void	cleanupMoves(t_moves **moves);
 
@@ -58,4 +59,7 @@ void	applySpecialMoves(char board[BOARD_H][BOARD_W], t_moves *moves, \
 							t_boardInfo *info);
 
 int		isCheckmate(char board[BOARD_H][BOARD_W], t_boardInfo *info);
+
+void	copyBoard(char dest[BOARD_H][BOARD_W], char src[BOARD_H][BOARD_W]);
+void	tryMove(char board[BOARD_H][BOARD_W], int self[2], int target[2]);
 #endif

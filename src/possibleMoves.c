@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/05/12 01:37:05 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/12 02:15:12 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/13 19:10:37 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static void	checkNorth(t_moves **moves, char board[BOARD_H][BOARD_W], \
 		if (tolower(piece) == 'p' && board[start[0]][start[1]] != '.')
 			return ;
 		if (isValidTarget(board[start[0]][start[1]], piece))
-			addMove(moves, newMove(start, 0));
+			addMove(moves, newMove(originalStart, start, 0));
 		else
 			return ;
 		if (board[start[0]][start[1]] != '.')
@@ -64,7 +64,7 @@ static void	checkWest(t_moves **moves, char board[BOARD_H][BOARD_W], \
 		if (!isWithinBounds(start))
 			return ;
 		if (isValidTarget(board[start[0]][start[1]], piece))
-			addMove(moves, newMove(start, 0));
+			addMove(moves, newMove(originalStart, start, 0));
 		else
 			return ;
 		if (board[start[0]][start[1]] != '.')
@@ -84,7 +84,7 @@ static void	checkEast(t_moves **moves, char board[BOARD_H][BOARD_W], \
 		if (!isWithinBounds(start))
 			return ;
 		if (isValidTarget(board[start[0]][start[1]], piece))
-			addMove(moves, newMove(start, 0));
+			addMove(moves, newMove(originalStart, start, 0));
 		else
 			return ;
 		if (board[start[0]][start[1]] != '.')
@@ -106,7 +106,7 @@ static void	checkSouth(t_moves **moves, char board[BOARD_H][BOARD_W], \
 		if (tolower(piece) == 'p' && board[start[0]][start[1]] != '.')
 			return ;
 		if (isValidTarget(board[start[0]][start[1]], piece))
-			addMove(moves, newMove(start, 0));
+			addMove(moves, newMove(originalStart, start, 0));
 		else
 			return ;
 		if (board[start[0]][start[1]] != '.')
@@ -129,7 +129,7 @@ static void	checkNorthWest(t_moves **moves, char board[BOARD_H][BOARD_W], \
 		if (tolower(piece) == 'p' && board[start[0]][start[1]] == '.')
 			return ;
 		if (isValidTarget(board[start[0]][start[1]], piece))
-			addMove(moves, newMove(start, 0));
+			addMove(moves, newMove(originalStart, start, 0));
 		else
 			return ;
 		if (board[start[0]][start[1]] != '.')
@@ -152,7 +152,7 @@ static void	checkNorthEast(t_moves **moves, char board[BOARD_H][BOARD_W], \
 		if (tolower(piece) == 'p' && board[start[0]][start[1]] == '.')
 			return ;
 		if (isValidTarget(board[start[0]][start[1]], piece))
-			addMove(moves, newMove(start, 0));
+			addMove(moves, newMove(originalStart, start, 0));
 		else
 			return ;
 		if (board[start[0]][start[1]] != '.')
@@ -175,7 +175,7 @@ static void	checkSouthWest(t_moves **moves, char board[BOARD_H][BOARD_W], \
 		if (tolower(piece) == 'p' && board[start[0]][start[1]] == '.')
 			return ;
 		if (isValidTarget(board[start[0]][start[1]], piece))
-			addMove(moves, newMove(start, 0));
+			addMove(moves, newMove(originalStart, start, 0));
 		else
 			return ;
 		if (board[start[0]][start[1]] != '.')
@@ -198,7 +198,7 @@ static void	checkSouthEast(t_moves **moves, char board[BOARD_H][BOARD_W], \
 		if (tolower(piece) == 'p' && board[start[0]][start[1]] == '.')
 			return ;
 		if (isValidTarget(board[start[0]][start[1]], piece))
-			addMove(moves, newMove(start, 0));
+			addMove(moves, newMove(originalStart, start, 0));
 		else
 			return ;
 		if (board[start[0]][start[1]] != '.')

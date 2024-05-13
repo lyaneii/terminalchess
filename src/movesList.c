@@ -6,19 +6,21 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/05/12 01:35:14 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/12 01:39:07 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/13 19:08:42 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 #include "moves.h"
 
-t_moves	*newMove(int target[2], int specialMove) {
+t_moves	*newMove(int self[2], int target[2], int specialMove) {
 	t_moves	*move;
 
 	move = malloc(sizeof(t_moves));
 	if (!move)
 		return NULL;
+	move->self[0] = self[0];
+	move->self[1] = self[1];
 	move->target[0] = target[0];
 	move->target[1] = target[1];
 	move->specialMove = specialMove;

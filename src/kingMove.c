@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/05/12 01:56:12 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/12 14:19:58 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/13 19:09:32 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void	getCastlingMoves(t_moves **moves, char board[BOARD_H][BOARD_W], \
 	else if (side == 0 && board[start[0]][start[1] - 4] != 'R');
 	else if (castleRights[side][1] == 1 && !castlesThroughCheck(board, start, side, -1) && \
 			castlingPathIsClear(board, start, -1))
-		addMove(moves, newMove((int[2]){start[0], start[1] - 2}, 2));
+		addMove(moves, newMove(start, (int[2]){start[0], start[1] - 2}, 2));
 }
 
 void	getKingMoves(t_moves **moves, char board[BOARD_H][BOARD_W], \

@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/05/12 02:03:03 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/12 02:58:09 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/13 19:11:22 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ static void	getAttackersNorthWest(t_moves **attackers, char board[BOARD_H][BOARD
 		if (!isWithinBounds(current))
 			return ;
 		if (targetCanAttackDiagonally(board[current[0]][current[1]], side, distance))
-			addMove(attackers, newMove(current, 0));
+			addMove(attackers, newMove(target, current, 0));
 		if (board[current[0]][current[1]] != '.')
 			return ;
 		distance--;
@@ -76,7 +76,7 @@ static void	getAttackersNorth(t_moves **attackers, char board[BOARD_H][BOARD_W],
 		if (!isWithinBounds(current))
 			return ;
 		if (targetCanAttackStraight(board[current[0]][current[1]], side, distance))
-			addMove(attackers, newMove(current, 0));
+			addMove(attackers, newMove(target, current, 0));
 		if (board[current[0]][current[1]] != '.')
 			return ;
 		distance--;
@@ -94,7 +94,7 @@ static void	getAttackersNorthEast(t_moves **attackers, char board[BOARD_H][BOARD
 		if (!isWithinBounds(current))
 			return ;
 		if (targetCanAttackDiagonally(board[current[0]][current[1]], side, distance))
-			addMove(attackers, newMove(current, 0));
+			addMove(attackers, newMove(target, current, 0));
 		if (board[current[0]][current[1]] != '.')
 			return ;
 		distance--;
@@ -111,7 +111,7 @@ static void	getAttackersEast(t_moves **attackers, char board[BOARD_H][BOARD_W], 
 		if (!isWithinBounds(current))
 			return ;
 		if (targetCanAttackStraight(board[current[0]][current[1]], side, distance))
-			addMove(attackers, newMove(current, 0));
+			addMove(attackers, newMove(target, current, 0));
 		if (board[current[0]][current[1]] != '.')
 			return ;
 		distance--;
@@ -129,7 +129,7 @@ static void	getAttackersSouthEast(t_moves **attackers, char board[BOARD_H][BOARD
 		if (!isWithinBounds(current))
 			return ;
 		if (targetCanAttackDiagonally(board[current[0]][current[1]], side, distance))
-			addMove(attackers, newMove(current, 0));
+			addMove(attackers, newMove(target, current, 0));
 		if (board[current[0]][current[1]] != '.')
 			return ;
 		distance--;
@@ -146,7 +146,7 @@ static void	getAttackersSouth(t_moves **attackers, char board[BOARD_H][BOARD_W],
 		if (!isWithinBounds(current))
 			return ;
 		if (targetCanAttackStraight(board[current[0]][current[1]], side, distance))
-			addMove(attackers, newMove(current, 0));
+			addMove(attackers, newMove(target, current, 0));
 		if (board[current[0]][current[1]] != '.')
 			return ;
 		distance--;
@@ -164,7 +164,7 @@ static void	getAttackersSouthWest(t_moves **attackers, char board[BOARD_H][BOARD
 		if (!isWithinBounds(current))
 			return ;
 		if (targetCanAttackDiagonally(board[current[0]][current[1]], side, distance))
-			addMove(attackers, newMove(current, 0));
+			addMove(attackers, newMove(target, current, 0));
 		if (board[current[0]][current[1]] != '.')
 			return ;
 		distance--;
@@ -181,7 +181,7 @@ static void	getAttackersWest(t_moves **attackers, char board[BOARD_H][BOARD_W], 
 		if (!isWithinBounds(current))
 			return ;
 		if (targetCanAttackStraight(board[current[0]][current[1]], side, distance))
-			addMove(attackers, newMove(current, 0));
+			addMove(attackers, newMove(target, current, 0));
 		if (board[current[0]][current[1]] != '.')
 			return ;
 		distance--;
@@ -200,9 +200,9 @@ static void	getPawnAttackers(t_moves **attackers, char board[BOARD_H][BOARD_W], 
 		if (!isWithinBounds(current[i]))
 			continue ;
 		if (side == 1 && board[current[i][0]][current[i][1]] == 'P')
-			addMove(attackers, newMove(current[i], 0));
+			addMove(attackers, newMove(target, current[i], 0));
 		else if (side == 0 && board[current[i][0]][current[i][1]] == 'p')
-			addMove(attackers, newMove(current[i], 0));
+			addMove(attackers, newMove(target, current[i], 0));
 	}
 }
 
@@ -224,7 +224,7 @@ static void	getKnightAttackers(t_moves **attackers, char board[BOARD_H][BOARD_W]
 		if (!isWithinBounds(knightPos[i]))
 			continue ;
 		if (targetIsOpponentKnight(board[knightPos[i][0]][knightPos[i][1]], side))
-			addMove(attackers, newMove(knightPos[i], 0));
+			addMove(attackers, newMove(target, knightPos[i], 0));
 	}
 }
 

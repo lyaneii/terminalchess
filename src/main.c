@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 14:12:07 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/12 23:15:43 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/13 21:21:37 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include "controls.h"
 #include "displayBoard.h"
 #include "initialise.h"
+#include "chessBot.h"
 
 static int	setupGame(char board[BOARD_H][BOARD_W], struct termios *term, t_boardInfo *info) {
 	initialiseEmptyBoard(board);
@@ -50,7 +51,7 @@ int	main(void) {
 		return 0;
 	while (read(STDIN_FILENO, &input, 1) && input != 'q' && exitCondition == 0) {
 		if (input == CHAR_SELECT)
-			exitCondition = handleSelection(board, &info);
+			exitCondition = handleSelection(board, &info, 1);
 		else if (strchr(CHAR_CONTROLS, input))
 			handleCharControls(input, &info);
 		else if (input == '\033')

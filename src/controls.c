@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/05/12 17:31:33 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/13 20:30:02 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/13 22:47:22 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include "moves.h"
+#include "chessBot.h"
 
 static void	movePieceToTarget(char board[BOARD_H][BOARD_W], int self[2], int target[2]) {
 	board[target[0]][target[1]] = board[self[0]][self[1]];
@@ -27,10 +28,10 @@ static void	updateLastMove(t_boardInfo *highlight, int self[2], int target[2]) {
 	highlight->lastMove[1][1] = target[1];
 }
 
-void	makeMove(char board[BOARD_H][BOARD_W], t_boardInfo *info) {
-	movePieceToTarget(board, info->selectedPiece, info->cursor);
+void	makeMove(char board[BOARD_H][BOARD_W], int target[2], t_boardInfo *info) {
+	movePieceToTarget(board, info->selectedPiece, target);
 	applySpecialMoves(board, info->moves, info);
-	updateLastMove(info, info->selectedPiece, info->cursor);
+	updateLastMove(info, info->selectedPiece, target);
 	info->turn = info->turn == 1 ? 0 : 1;
 }
 
@@ -53,15 +54,21 @@ int	isHighlightedMove(t_moves *moves, int row, int col) {
 	return 0;
 }
 
-int	handleSelection(char board[BOARD_H][BOARD_W], t_boardInfo *info) {
+int	handleSelection(char board[BOARD_H][BOARD_W], t_boardInfo *info, int bot) {
 	if (info->cursor[0] == info->selectedPiece[0] && \
 		info->cursor[1] == info->selectedPiece[1])
 		deselectPiece(info);
 	else if (isHighlightedMove(info->moves, info->cursor[0], info->cursor[1])) {
-		makeMove(board, info);
+		makeMove(board, info->cursor, info);
 		deselectPiece(info);
 		if (isCheckmate(board, info))
 			return 1;
+		if (bot) {
+			engineMakeMove(info, board);
+			deselectPiece(info);
+			if (isCheckmate(board, info))
+				return 1;
+		}
 	}
 	else if (board[info->cursor[0]][info->cursor[1]] == '.')
 		deselectPiece(info);

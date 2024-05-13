@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/05/08 13:22:16 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/13 20:30:13 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/13 22:48:11 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	applySpecialMoves(char board[BOARD_H][BOARD_W], t_moves *moves, \
 							t_boardInfo *info);
 
 int		isCheckmate(char board[BOARD_H][BOARD_W], t_boardInfo *info);
-void	makeMove(char board[BOARD_H][BOARD_W], t_boardInfo *info);
+void	makeMove(char board[BOARD_H][BOARD_W], int target[2], t_boardInfo *info);
 void	copyBoard(char dest[BOARD_H][BOARD_W], char src[BOARD_H][BOARD_W]);
 void	tryMove(char board[BOARD_H][BOARD_W], int self[2], int target[2]);
 #endif

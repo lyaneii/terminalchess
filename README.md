@@ -10,7 +10,7 @@ It also includes the special rules:
 - Pawn promotion
 
 The board is setup with the default chess position using the FEN format. It can be adjusted in `src/main.c` if you would like to load a specific position, in the future I will include a way to input your own custom position in a more friendly way.\
-As of now can only be played locally against another person on the same computer.
+As of now the game can only be played locally against another person on the same computer.
 
 # How to play
 ## Build

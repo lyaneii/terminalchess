@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/04/28 14:12:07 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/14 18:29:24 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/14 22:56:14 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 static int	setupGame(char board[BOARD_H][BOARD_W], struct termios *term, t_boardInfo *info) {
 	initialiseEmptyBoard(board);
 	initialiseHighlight(info);
-	loadFEN(board, "r1b2bnr/ppQ3pp/k1n5/1N1Bp3/PP2P3/2P5/3P1PPP/R1B2RK1 w KQkq - 0 1", info);
+	loadFEN(board, "r1bqk2r/ppppbppp/2n2n2/4p3/4P3/3B1N2/PPPP1PPP/RNBQ1RK1 w kq - 0 1", info);
 	displayBoard(board, info);
 	enableRawMode(term);
 	if (isCheckmate(board, info)) {

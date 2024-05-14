@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/05/12 17:31:33 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/13 22:47:22 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/14 17:54:36 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include "moves.h"
+#include "displayBoard.h"
 #include "chessBot.h"
 
 static void	movePieceToTarget(char board[BOARD_H][BOARD_W], int self[2], int target[2]) {
@@ -28,10 +29,12 @@ static void	updateLastMove(t_boardInfo *highlight, int self[2], int target[2]) {
 	highlight->lastMove[1][1] = target[1];
 }
 
-void	makeMove(char board[BOARD_H][BOARD_W], int target[2], t_boardInfo *info) {
-	movePieceToTarget(board, info->selectedPiece, target);
-	applySpecialMoves(board, info->moves, info);
-	updateLastMove(info, info->selectedPiece, target);
+void	makeMove(char board[BOARD_H][BOARD_W], t_moves *move, t_boardInfo *info) {
+	if (!move)
+		return ;
+	movePieceToTarget(board, move->self, move->target);
+	applySpecialMoves(board, move, info);
+	updateLastMove(info, move->self, move->target);
 	info->turn = info->turn == 1 ? 0 : 1;
 }
 
@@ -43,6 +46,16 @@ static void	deselectPiece(t_boardInfo *highlight) {
 static void	selectPiece(t_boardInfo *highlight) {
 	highlight->selectedPiece[0] = highlight->cursor[0];
 	highlight->selectedPiece[1] = highlight->cursor[1];
+}
+
+t_moves	*getHighlightedMove(t_moves *moves, int highlight[2])
+{
+	while (moves) {
+		if (moves->target[0] == highlight[0] && moves->target[1] == highlight[1])
+			return moves;
+		moves = moves->next;
+	}
+	return NULL;
 }
 
 int	isHighlightedMove(t_moves *moves, int row, int col) {
@@ -59,11 +72,13 @@ int	handleSelection(char board[BOARD_H][BOARD_W], t_boardInfo *info, int bot) {
 		info->cursor[1] == info->selectedPiece[1])
 		deselectPiece(info);
 	else if (isHighlightedMove(info->moves, info->cursor[0], info->cursor[1])) {
-		makeMove(board, info->cursor, info);
+		t_moves	*move = getHighlightedMove(info->moves, info->cursor);
+		makeMove(board, move, info);
 		deselectPiece(info);
 		if (isCheckmate(board, info))
 			return 1;
 		if (bot) {
+			displayBoard(board, info);
 			engineMakeMove(info, board);
 			deselectPiece(info);
 			if (isCheckmate(board, info))

@@ -6,14 +6,16 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/05/13 18:44:29 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/13 22:49:20 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/14 20:34:26 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stddef.h>
 #include <ctype.h>
 #include <limits.h>
+#include <stdio.h>
 #include "chessBot.h"
+#include "displayBoard.h"
 
 static void	getAllMoves(t_moves **moves, t_boardInfo *info, char board[BOARD_H][BOARD_W]) {
 	int (*pieceMatchesTurn)(int) = info->turn == 1 ? isupper : islower;
@@ -43,14 +45,14 @@ static void	flipTable(int table[BOARD_H][BOARD_W]) {
 
 static int	knightMultiplier(int x, int y) {
 	int	table[BOARD_H][BOARD_W] = {
-		{-20,-10,0	,5	,5	,0	,-10,-20},
+		{-20,-20,0	,5	,5	,0	,-20,-20},
 		{-10,0	,10	,15	,15	,10	,0	,-10},
 		{5	,10	,50	,60	,60	,50	,10	,5	},
 		{10	,30	,70	,80	,80	,70	,30	,10	},
 		{10	,30	,70	,80	,80	,70	,30	,10	},
 		{5	,10	,50	,60	,60	,50	,10	,5	},
 		{-10,0	,10	,15	,15	,10	,0	,-10},
-		{-20,-10,0	,5	,5	,0	,-10,-20}
+		{-20,-20,0	,5	,5	,0	,-20,-20}
 	};
 
 	return table[x][y];
@@ -182,6 +184,12 @@ static void	calculateMoves(t_boardInfo *info, t_engine *engine, t_moves *rootMov
 	char	copy[BOARD_H][BOARD_W];
 	int		currentEval = evaluatePosition(board, info->turn);
 
+	if (info->turn != engine->side && currentEval < engine->maxResponseEval)
+		return ;
+	else {
+		engine->bestMove = rootMove;
+		engine->maxResponseEval = currentEval;
+	}
 	if (info->turn == engine->side && currentEval > engine->maxSelfEval) {
 		engine->bestMove = rootMove;
 		engine->maxSelfEval = currentEval;
@@ -189,7 +197,7 @@ static void	calculateMoves(t_boardInfo *info, t_engine *engine, t_moves *rootMov
 	if (depth >= engine->maxDepth)
 		return ;
 	
-	getAllMoves(&moves, info, copy);
+	getAllMoves(&moves, info, board);
 	current = moves;
 	while (current) {
 		info->turn = info->turn == 1 ? 0 : 1;
@@ -209,9 +217,9 @@ void	engineMakeMove(t_boardInfo *info, char board[BOARD_H][BOARD_W]) {
 	char		copy[BOARD_H][BOARD_W];
 
 	engine.side = info->turn;
-	engine.maxSelfEval = INT_MIN;
+	engine.maxSelfEval = evaluatePosition(board, engine.side);
 	engine.maxResponseEval = INT_MIN;
-	engine.maxDepth = 20;
+	engine.maxDepth = 4;
 	
 	getAllMoves(&rootMoves, &copyInfo, board);
 	current = rootMoves;
@@ -222,9 +230,7 @@ void	engineMakeMove(t_boardInfo *info, char board[BOARD_H][BOARD_W]) {
 		calculateMoves(&copyInfo, &engine, current, copy, 1);
 		current = current->next;
 	}
-	info->selectedPiece[0] = engine.bestMove->self[0];
-	info->selectedPiece[1] = engine.bestMove->self[1];
-	makeMove(board, engine.bestMove->target, info);
+	makeMove(board, engine.bestMove, info);
 	cleanupMoves(&rootMoves);
 }
 

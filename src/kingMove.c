@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/05/12 01:56:12 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/13 19:25:20 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/14 18:24:25 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,8 @@ static int	castlesThroughCheck(char board[BOARD_H][BOARD_W], int start[2], \
 	t_moves *attackers = NULL;
 
 	for (size_t i = 0; i < 2; i++) {
-		current[1] += direction;
 		getPiecesAttackingSquare(&attackers, board, current, side);
+		current[1] += direction;
 	}
 	if (attackers == NULL)
 		return 0;

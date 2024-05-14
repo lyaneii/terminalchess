@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/05/12 17:34:52 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/12 23:47:20 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/14 17:57:54 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,24 +137,18 @@ static void extraMovePromotion(char pawn, char board[BOARD_H][BOARD_W], t_boardI
 	pickPromotionPiece(board, info, side);
 }
 
-void	applySpecialMoves(char board[BOARD_H][BOARD_W], t_moves *moves, \
+void	applySpecialMoves(char board[BOARD_H][BOARD_W], t_moves *move, \
 							t_boardInfo *info) {
-	
-	while (moves) {
-		if (moves->target[0] == info->cursor[0] && moves->target[1] == info->cursor[1])
-			break ;
-		moves = moves->next;
-	}
-	if (moves == NULL)
+	if (move == NULL)
 		return ;
-	if (abs(moves->specialMove) == 1)
-		extraMoveEnPassant(board, info->cursor[0] + moves->specialMove, info->cursor[1]);
-	else if (moves->specialMove == 2)
-		extraMoveCastling(board, info->cursor, info->castleRights);
-	else if (tolower(board[info->cursor[0]][info->cursor[1]]) == 'r')
-		updateRookCastlingRights(board[info->cursor[0]][info->cursor[1]], info->castleRights, info->cursor);
-	else if (tolower(board[info->cursor[0]][info->cursor[1]]) == 'k')
-		updateKingCastlingRights(board[info->cursor[0]][info->cursor[1]], info->castleRights);
-	else if (tolower(board[info->cursor[0]][info->cursor[1]]) == 'p')
-		extraMovePromotion(board[info->cursor[0]][info->cursor[1]], board, info);
+	if (abs(move->specialMove) == 1)
+		extraMoveEnPassant(board, move->target[0] + move->specialMove, move->target[1]);
+	else if (move->specialMove == 2)
+		extraMoveCastling(board, move->target, info->castleRights);
+	else if (tolower(board[move->target[0]][move->target[1]]) == 'r')
+		updateRookCastlingRights(board[move->target[0]][move->target[1]], info->castleRights, move->target);
+	else if (tolower(board[move->target[0]][move->target[1]]) == 'k')
+		updateKingCastlingRights(board[move->target[0]][move->target[1]], info->castleRights);
+	else if (tolower(board[move->target[0]][move->target[1]]) == 'p')
+		extraMovePromotion(board[move->target[0]][move->target[1]], board, info);
 }

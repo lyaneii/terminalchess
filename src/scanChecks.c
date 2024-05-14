@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/05/12 01:39:44 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/13 19:04:07 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/14 17:19:11 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,12 +54,12 @@ static void	getKingPosition(char board[BOARD_H][BOARD_W], int side, int kingPos[
 	}
 }
 
-void	removeMovesNotBlockingCheck(t_moves **moves, char board[BOARD_H][BOARD_W], int piece[2]) {
+void	removeMovesNotBlockingCheck(t_moves **moves, char board[BOARD_H][BOARD_W]) {
 	t_moves	*remove;
 	t_moves	*current = *moves;
 
 	while (current && current->next) {
-		if (!moveBlocksCheck(current->next->target, board, piece)) {
+		if (!moveBlocksCheck(current->next->target, board, current->next->self)) {
 			remove = current->next;
 			current->next = remove->next;
 			free(remove);
@@ -68,7 +68,7 @@ void	removeMovesNotBlockingCheck(t_moves **moves, char board[BOARD_H][BOARD_W], 
 			current = current->next;
 	}
 	current = *moves;
-	if (current && !moveBlocksCheck(current->target, board, piece)) {
+	if (current && !moveBlocksCheck(current->target, board, current->self)) {
 		*moves = current->next;
 		free(current);
 	}

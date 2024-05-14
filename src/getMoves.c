@@ -6,7 +6,7 @@
 /*   By: kwchu <kwchu@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/05/12 01:40:39 by kwchu         #+#    #+#                 */
-/*   Updated: 2024/05/12 13:33:59 by kwchu         ########   odam.nl         */
+/*   Updated: 2024/05/14 17:20:03 by kwchu         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,5 +38,5 @@ void	getMovesAtSquare(t_moves **moves, char board[BOARD_H][BOARD_W], \
 		getKnightMoves(moves, board, position);
 	attackers = getPiecesAttackingKing(board, originalPosition);
 	cleanupMoves(&attackers);
-	removeMovesNotBlockingCheck(moves, board, originalPosition);
+	removeMovesNotBlockingCheck(moves, board);
 }
